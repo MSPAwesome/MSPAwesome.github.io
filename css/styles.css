@@ -5,7 +5,8 @@ body {
 }
 
 h1, h2, h3 {
-  font-family: Impact, fantasy;
+  font-family: Helvetica, Verdana, sans-serif;
+  font-weight: normal;
 }
 
 h1 {
@@ -29,5 +30,8 @@ h1~p {
 }
 
 div.footer {
+  background-color: #545454;
+  color: #f1f1f1;
+  font-family: Helvetica, Verdana, sans-serif;
   font-size: 75%
 }
