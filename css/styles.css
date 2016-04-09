@@ -1,0 +1,33 @@
+body {
+  font-family: Georgia, Times, serif;
+  font-size: 100%;
+  line-height: 1.4em;
+}
+
+h1, h2, h3 {
+  font-family: Impact, fantasy;
+}
+
+h1 {
+    font-size: 200%;
+}
+
+h2 {
+  font-size: 150%
+}
+
+h3 {
+  font-size: 112.5%
+}
+
+p {
+  text-indent: 1em;
+}
+
+h1~p {
+  text-indent: 0;
+}
+
+div.footer {
+  font-size: 75%
+}
