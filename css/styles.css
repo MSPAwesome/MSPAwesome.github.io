@@ -7,12 +7,12 @@ body {
 h1 {
   font-family: 'Montserrat', sans-serif;
   background-color: #f9f8f6;
-  height: 70px;
+  height: 60px;
   text-align: center;
-  padding-top: 20px;
+  padding-top: 30px;
   font-size: 200%;
   color: #317ABD;
-  margin: 0px;
+  margin: 0%;
 }
 
 h2, h3 {
