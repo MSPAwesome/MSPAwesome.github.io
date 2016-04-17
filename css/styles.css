@@ -4,16 +4,18 @@ body {
   line-height: 1.4em;
 }
 
+
 h1 {
   font-family: 'Montserrat', sans-serif;
   background-color: #f9f8f6;
   height: 60px;
   text-align: center;
   padding-top: 30px;
-  font-size: 200%;
+  font-size: 250%;
   color: #317ABD;
   margin: 0%;
 }
+
 
 h2, h3 {
   font-family: Helvetica, Verdana, sans-serif;
