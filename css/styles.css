@@ -37,7 +37,7 @@ h1~p {
   text-indent: 0;
 }
 
-div.footer {
+footer {
   background-color: #317ABD;
   color: #f1f1f1;
   font-family: Helvetica, Verdana, sans-serif;
@@ -64,7 +64,4 @@ nav li {
 
 nav li a {
   color: #f1f1f1;
-}  
-
-
-
+}

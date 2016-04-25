@@ -1,29 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="utf-8">
+    <!-- reference to hosted d3 lib -->
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!--styles-->
     <link href="css/styles.css" type="text/css" rel="stylesheet" />
-	<link href='https://fonts.googleapis.com/css?family=Montserrat:700' rel='stylesheet' type='text/css'>
+	  <link href='https://fonts.googleapis.com/css?family=Montserrat:700' rel='stylesheet' type='text/css'>
     <title>Pump It Up</title>
   </head>
+
   <body>
-	<header>
-		<h1>Water Pump Functionality Dashboard</h1>
-		<nav>
-			<ul>
-				<li><a href="index.html">Home</a></li>
-				<li><a href="About_Us.html">About Us</a></li>
-				<li><a href="Background.html">Background</a></li>
-				<li><a href="Model_Info.html">Model Info</a></li>
-			</ul>
-		</nav>
-	</header>
-    <p>
-      Future home of map with predicted water-pump function.
-    </p>
-    <div class="footer">
+  	<header>
+  		<h1>Water Pump Functionality Dashboard</h1>
+  		<nav>
+  			<ul>
+  				<li><a href="index.html">Home</a></li>
+  				<li><a href="About_Us.html">About Us</a></li>
+  				<li><a href="Background.html">Background</a></li>
+  				<li><a href="Model_Info.html">Model Info</a></li>
+  			</ul>
+  		</nav>
+  	</header>
+    <main role="main">
+
+      <script type="text/javascript">
+        // d3 code here! This is just an exercise:
+        d3.select("main").append("p").text("New paragraph!");
+      </script>
+
+      <p>
+        Future home of map with predicted water-pump function.
+      </p>
+    </main>
+
+    <footer>
       <p>
         Created by Team Awesome, <a href="http://sps.northwestern.edu/program-areas/graduate/predictive-analytics/" style="color: #f1f1f1">MSPA</a> Capstone PREDICT 498 Section 55, Spring 2016.
       </p>
-    </div><!-- end of footer -->
+    </footer>
   </body>
 </html>
