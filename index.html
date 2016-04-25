@@ -2,13 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <!-- reference to hosted d3 lib -->
-    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-
-    <!--styles-->
     <link href="css/styles.css" type="text/css" rel="stylesheet" />
 	  <link href='https://fonts.googleapis.com/css?family=Montserrat:700' rel='stylesheet' type='text/css'>
+
     <title>Pump It Up</title>
+
   </head>
 
   <body>
@@ -23,16 +21,11 @@
   			</ul>
   		</nav>
   	</header>
+
     <main role="main">
-
-      <script type="text/javascript">
-        // d3 code here! This is just an exercise:
-        d3.select("main").append("p").text("New paragraph!");
-      </script>
-
-      <p>
-        Future home of map with predicted water-pump function.
-      </p>
+      <!-- We'll add our svgs for the dashboard components here.
+        If we need to include regular <p> text as well, we can maybe
+        add a div for the svg elements? -->
     </main>
 
     <footer>
@@ -40,5 +33,9 @@
         Created by Team Awesome, <a href="http://sps.northwestern.edu/program-areas/graduate/predictive-analytics/" style="color: #f1f1f1">MSPA</a> Capstone PREDICT 498 Section 55, Spring 2016.
       </p>
     </footer>
+
+    <!-- javascript -->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="js/dashboard.js"></script>
   </body>
 </html>
