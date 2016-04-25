@@ -65,3 +65,29 @@ nav li {
 nav li a {
   color: #f1f1f1;
 }
+
+/*********************
+styles for svg elements created with d3;
+use code for dynamic element styles, use this
+for universal element styles
+*********************/
+svg {
+  display: block;
+  margin:auto;
+}
+
+svg text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 150%;
+}
+svg [class="functional"] {
+  fill: #189d07;
+}
+
+svg [class="functional needs repair"] {
+  fill: #baa208;
+}
+
+svg [class="non functional"] {
+  fill: #9e0000;
+}
