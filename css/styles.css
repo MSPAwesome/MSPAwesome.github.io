@@ -76,7 +76,17 @@ svg {
   margin:auto;
 }
 
-svg text {
+.map {
+  stroke: black;
+}
+path.region {
+  fill: none;
+}
+path.region:hover {
+  fill: #189d07;
+}
+
+svg text.barChart {
     font-family: 'Montserrat', sans-serif;
     font-size: 150%;
 }
