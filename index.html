@@ -4,13 +4,10 @@
     <meta charset="utf-8">
     <link href="css/styles.css" type="text/css" rel="stylesheet" />
 	  <link href='https://fonts.googleapis.com/css?family=Montserrat:700' rel='stylesheet' type='text/css'>
-
     <title>Pump It Up</title>
-
   </head>
 
   <body>
-
   	<header>
   		<h1>Water Pump Functionality Dashboard</h1>
   		<nav>
@@ -22,14 +19,52 @@
   			</ul>
   		</nav>
   	</header>
-
+    <!-- "main" section is to tag this semantically, and keep it a sibling of
+    "header" and "footer" -->
     <main role="main">
-
-      <!-- We'll add our svgs for the dashboard components here. -->
-
-  	  <div class="kpi">
+      <aside id="toc">
+        <!-- this will be a TOC of the H1 elements for each viz. I want to try
+        to add it dynamically with JavaScript probably -->
+      </aside>
+      <!-- add a section for each visual, with a descriptive id attribute.
+          Note, "id" must be unique. Everything related to this specific visual
+          should go inside the section tags -->
+      <section id="map-viz">
+        <!-- each section should have an H1, to use in the TOC nav element -->
+        <h1>Map of Tanzania</h1>
+        <figure>
+          <div class="viz">
+            <!-- this is what we'll select to add svg with d3. Selector *should* be "#map .viz" (note space between id and class). Note that d3 will append the svg to the END of the element, so by adding a div we can be sure it gets placed correctly -->
+          </div>
+          <figcaption>
+            This will be the caption, if we need one.
+          </figcaption>
+          <p>
+            And this is descriptive text or what have you.
+          </p>
+        </figure>
+      </section>
+      <section id="barChart-viz">
+        <!-- each section should have an H1, to use in the TOC nav element -->
+        <h1>Functionality Totals</h1>
+        <figure>
+          <div class="viz">
+            <!-- this is what we'll select to add svg with d3. Selector *should* be "#map .viz" (note space between id and class). Note that d3 will append the svg to the END of the element, so by adding a div we can be sure it gets placed correctly -->
+          </div>
+          <figcaption>
+            This will be the caption, if we need one.
+          </figcaption>
+          <p>
+            And this is descriptive text or what have you.
+          </p>
+        </figure>
+      </section>
+  	  <section id="status-year">
+        <h1>Water Point Status by Year of Construction</h1>
   	    <figure>
-    			<img src="images/WaterPoint_Status_ConstYear.png" alt="Status by Construction Year" class="large"/>
+          <div class="viz">
+            <img src="images/WaterPoint_Status_ConstYear.png" alt="Status by Construction Year" class="large"/>
+          </div>
     			<figcaption>
             Legend: Green=Functional, Yellow=Needs Repair, Red=Non-Functional
           </figcaption>
@@ -37,26 +72,28 @@
     		<p>
           This is a static image of Water Point status by Construction Year. The image will be updated to a JavaScript version in future sprints.
     		</p>
+      </section>
+      <section id="status-region">
+        <h1>Water Point Status by Region</h1>
     		<figure>
-    			<img src="images/WaterPoint_Status_Region.png" alt="Status by Region" class="large"/>
+          <div class="viz">
+            <img src="images/WaterPoint_Status_Region.png" alt="Status by Region" class="large"/>
+          </div>
     			<figcaption> Legend: Green=Functional, Yellow=Needs Repair, Red=Non-Functional</figcaption>
     		</figure>
     		<p>
           This is a static image of Water Point status by region. The image will be updated to a JavaScript version in future sprints.
         </p>
-  	  </div>
-
+  	  </section>
     </main>
-
     <footer>
       <p>
         Created by Team Awesome, <a href="http://sps.northwestern.edu/program-areas/graduate/predictive-analytics/" style="color: #f1f1f1">MSPA</a> Capstone PREDICT 498 Section 55, Spring 2016.
       </p>
     </footer><!-- end of footer -->
 
-    <!-- javascript links last items before end of body -->
+    <!-- javascript links should be last items before end of body -->
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="js/dashboard.js"></script>
-
   </body>
 </html>

@@ -14,11 +14,10 @@ var path = d3.geo.path()
   .projection(projection);
 
 // generate svg object in main section
-var geoSVG = d3.select("main")
+var geoSVG = d3.select("#map-viz .viz")
   .append("svg")
   .attr("width", w)
-  .attr("height", h)
-  .attr("class", "map");
+  .attr("height", h);
 
 // load GeoJSON and do stuff with it
 // various GeoJSON files from https://github.com/thadk/GeoTZ
@@ -53,7 +52,7 @@ d3.csv("data/counts.csv", function(error, data) {
     dataset = data;
 
     // Create svg in <main> to bind data to
-    var svg = d3.select("main")
+    var svg = d3.select("#barChart-viz .viz")
       .append("svg")
       .attr("width", w)
       .attr("height", h)
