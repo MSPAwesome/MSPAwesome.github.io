@@ -2,6 +2,7 @@ body {
   font-family: Georgia, Times, serif;
   font-size: 100%;
   line-height: 1.4em;
+  color: #00004d;
 }
 
 
@@ -11,13 +12,13 @@ h1 {
   text-align: center;
   padding:50px;
   font-size: 250%;
-  color: #317ABD;
+  color:   #00004d;
   margin: 0%;
 }
 
 
 h2, h3 {
-  font-family: Helvetica, Verdana, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: normal;
 }
 
@@ -31,6 +32,7 @@ h3 {
 
 p {
   text-indent: 1em;
+  text-align: left;
 }
 
 h1~p {
@@ -38,14 +40,14 @@ h1~p {
 }
 
 footer {
-  background-color: #317ABD;
+  background-color: #000080;
   color: #f1f1f1;
   font-family: Helvetica, Verdana, sans-serif;
   font-size: 75%
 }
 
 nav {
-  background-color:#317ABD;
+  background-color:#000080;
   color: #f1f1f1;
   height: 30px;
 }
@@ -64,8 +66,33 @@ nav li {
 
 nav li a {
   color: #f1f1f1;
+  text-decoration: none;
 }
 
+img {
+display: block;
+margin: 0 auto;
+border: 2px solid #000080;
+}
+
+img.large {
+width: 50%;
+height: 50%;
+}
+
+img.small {
+width: 20%;
+height: 20%;
+}
+
+div.kpi {
+text-align: center;
+}
+
+div.kpi p {
+margin-bottom: 50px;
+text-align: center;
+}
 /*********************
 styles for svg elements created with d3;
 use code for dynamic element styles, use this

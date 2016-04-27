@@ -10,6 +10,7 @@
   </head>
 
   <body>
+
   	<header>
   		<h1>Water Pump Functionality Dashboard</h1>
   		<nav>
@@ -23,22 +24,39 @@
   	</header>
 
     <main role="main">
-      <p>
-        Future home of map with predicted water-pump function.
-      </p>
-      <!-- We'll add our svgs for the dashboard components here.
-        If we need to include regular <p> text as well, we can maybe
-        add a div for the svg elements? -->
+
+      <!-- We'll add our svgs for the dashboard components here. -->
+
+  	  <div class="kpi">
+  	    <figure>
+    			<img src="images/WaterPoint_Status_ConstYear.png" alt="Status by Construction Year" class="large"/>
+    			<figcaption>
+            Legend: Green=Functional, Yellow=Needs Repair, Red=Non-Functional
+          </figcaption>
+    		</figure>
+    		<p>
+          This is a static image of Water Point status by Construction Year. The image will be updated to a JavaScript version in future sprints.
+    		</p>
+    		<figure>
+    			<img src="images/WaterPoint_Status_Region.png" alt="Status by Region" class="large"/>
+    			<figcaption> Legend: Green=Functional, Yellow=Needs Repair, Red=Non-Functional</figcaption>
+    		</figure>
+    		<p>
+          This is a static image of Water Point status by region. The image will be updated to a JavaScript version in future sprints.
+        </p>
+  	  </div>
+
     </main>
 
     <footer>
       <p>
         Created by Team Awesome, <a href="http://sps.northwestern.edu/program-areas/graduate/predictive-analytics/" style="color: #f1f1f1">MSPA</a> Capstone PREDICT 498 Section 55, Spring 2016.
       </p>
-    </footer>
+    </footer><!-- end of footer -->
 
-    <!-- javascript -->
+    <!-- javascript links last items before end of body -->
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="js/dashboard.js"></script>
+
   </body>
 </html>
