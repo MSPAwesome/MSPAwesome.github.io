@@ -47,6 +47,7 @@ class is more specific than element name, so
 path.region { /* path is for map; could be "#map path.region" if needed */
   stroke: black;
   fill: none;
+  pointer-events:all;
 }
 path.region:hover {
   fill: #189d07;
