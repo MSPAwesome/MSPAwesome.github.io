@@ -10,7 +10,7 @@
   <body>
   	<header>
   		<h1>Water Pump Functionality Dashboard</h1>
-  		<nav>
+  		<nav id="site-nav">
   			<ul>
   				<li><a href="index.html">Home</a></li>
   				<li><a href="About_Us.html">About Us</a></li>
@@ -23,15 +23,22 @@
     "header" and "footer" -->
     <main role="main">
       <aside id="toc">
-        <!-- this will be a TOC of the H1 elements for each viz. I want to try
-        to add it dynamically with JavaScript probably -->
+        <!-- eventually try to add dynamically with JavaScript -->
+        <nav id="page-nav">
+          <ul>
+            <li><a href="#map-of-tanzania">Map of Tanzania</a></li>
+            <li><a href="#functionality-totals">Functionality Totals</a></li>
+            <li><a href="#status-by-year-of-construction">Water Point Status by Year of Construction</a></li>
+            <li><a href="#status-by-year-of-construction">Water Point Status by Year of Construction</a></li>
+          </ul>
+        </nav>
       </aside>
       <!-- add a section for each visual, with a descriptive id attribute.
           Note, "id" must be unique. Everything related to this specific visual
           should go inside the section tags -->
       <section id="map-viz">
         <!-- each section should have an H1, to use in the TOC nav element -->
-        <h1>Map of Tanzania</h1>
+        <h1 id="map-of-tanzania">Map of Tanzania</h1>
         <figure>
           <div class="viz">
             <!-- this is what we'll select to add svg with d3. Selector *should* be "#map .viz" (note space between id and class). Note that d3 will append the svg to the END of the element, so by adding a div we can be sure it gets placed correctly -->
@@ -46,7 +53,7 @@
       </section>
       <section id="barChart-viz">
         <!-- each section should have an H1, to use in the TOC nav element -->
-        <h1>Functionality Totals</h1>
+        <h1 id="functionality-totals">Functionality Totals</h1>
         <figure>
           <div class="viz">
             <!-- this is what we'll select to add svg with d3. Selector *should* be "#map .viz" (note space between id and class). Note that d3 will append the svg to the END of the element, so by adding a div we can be sure it gets placed correctly -->
@@ -60,7 +67,7 @@
         </figure>
       </section>
   	  <section id="status-year">
-        <h1>Water Point Status by Year of Construction</h1>
+        <h1 id="status-by-year-of-construction">Water Point Status by Year of Construction</h1>
   	    <figure>
           <div class="viz">
             <img src="images/WaterPoint_Status_ConstYear.png" alt="Status by Construction Year" class="large"/>
@@ -74,7 +81,7 @@
     		</p>
       </section>
       <section id="status-region">
-        <h1>Water Point Status by Region</h1>
+        <h1 if="status-by-region">Water Point Status by Region</h1>
     		<figure>
           <div class="viz">
             <img src="images/WaterPoint_Status_Region.png" alt="Status by Region" class="large"/>

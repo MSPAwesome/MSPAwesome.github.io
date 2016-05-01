@@ -6,8 +6,17 @@ body {
   color: #00004d;
 }
 
-/* styles for MAIN element, but I'm not including MAIN here to make the
-CSS simpler. We'll have selectors for HEADER and FOOTER elements later on */
+/* *************************************************************
+ styles for MAIN element, but I'm not including MAIN here to make the
+CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
+******************************************************************/
+
+/* page table of contents. NOTE site toc is below, in header section */
+#page-nav {
+  
+}
+
+/* rest of page */
 h1, h2, h3 {
   font-family: 'Montserrat', sans-serif;
   font-weight: normal;
@@ -124,27 +133,27 @@ header h1 {
   margin: 0%;
 }
 
-header nav {
+#site-nav {
   /* aside.toc will also have a nav,
   so making sure these are only in header */
   background-color:#000080;
   color: #f1f1f1;
   height: 30px;
-}
-
-header ul {
   font-family: Helvetica, Verdana, sans-serif;
-  margin: 0px;
-  padding: 5px 0px 5px 30px;
   text-align: center;
 }
 
-header li {
+#site-nav ul {
+  margin: 0px;
+  padding: 5px 0px 5px 30px;
+}
+
+#site-nav li {
  display: inline;
  margin-right: 40px;
 }
 
-header li a {
+#site-nav li a {
   color: #f1f1f1;
   text-decoration: none;
 }
