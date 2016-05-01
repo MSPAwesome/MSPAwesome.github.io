@@ -5,13 +5,7 @@ var h = 1000;
 // Let's make some maps!
 
 
-// path generator to translate GeoJSON to SVG path codes
-var projection = d3.geo.mercator()
-  .center([34.8888, -6.3690])
-  .translate([w / 2, h / 2])
-  .scale(5000);
-var path = d3.geo.path()
-  .projection(projection);
+
 
 // generate svg object in main section
 var geoSVG = d3.select("#map-viz .viz")
@@ -21,14 +15,28 @@ var geoSVG = d3.select("#map-viz .viz")
 
 // load GeoJSON and do stuff with it
 // various GeoJSON files from https://github.com/thadk/GeoTZ
-d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
+d3.json("geo/TZA_adm2.topojson", function(error, json) {
   if(error) {
     console.log(error);
   } else {
+    console.log(json);
+
+    // projection of map to 2D plane
+    var projection = d3.geo.mercator()
+      .center([34.8888, -6.3690])
+      .translate([w / 2, h / 2])
+      .scale(5000);
+    // path generator to format projection to SVG
+    var path = d3.geo.path()
+      .projection(projection);
+    //must convert TopoJSON back to GeoJSON for display
+    var subunits = topojson.feature(json, json.objects.TZA_adm2)
+
     // bind GeoJSON features to new path elements
-    geoSVG.selectAll("path")
-      .data(json.features)
-      .enter().append("path")
+    geoSVG.append("path")
+      //.data(json.features)
+      .datum(subunits)
+      //.enter().append("path")
       .attr("d", path)
       .attr({
         class: "region"
