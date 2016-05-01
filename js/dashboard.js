@@ -11,6 +11,12 @@ var geoSVG = d3.select("#map-viz .viz")
   .attr("width", w)
   .attr("height", h);
 
+// path generator to map JSON file to SVG path codes
+var projection = d3.geo.mercator()
+  .center([34.8888, -6.3690])
+  .translate([w / 2, h / 2])
+  .scale(3000);
+
 // load map and do stuff with it
 // various GeoJSON and TopoJSON files from https://github.com/thadk/GeoTZ
 
@@ -23,11 +29,7 @@ d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
   } else {
     // log json to get a look at its structure since it crashes my text editor
     console.log(json);
-    // path generator to translate GeoJSON to SVG path codes
-    var projection = d3.geo.mercator()
-      .center([34.8888, -6.3690])
-      .translate([w / 2, h / 2])
-      .scale(3000);
+
     var path = d3.geo.path()
       .projection(projection);
     // bind GeoJSON features to new path elements
@@ -38,32 +40,31 @@ d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
       .attr({
         class: "region"
       });
-
-    // load data about water points
-    d3.csv("data/sample-data-filters.csv", function(error, data) {
-      if(error) {   // if error is not NULL, i.e. data file loaded wrong
-        console.log(error);
-      } else {
-        geoSVG.selectAll("circle")
-          .data(data)
-          .enter()
-          .append("circle")
-          .attr("cx", function(d) {
-            return projection([d.longitude, d.latitude])[0];
-          })
-          .attr("cy", function(d) {
-            return projection([d.longitude, d.latitude])[1];
-          })
-          .attr("r", 5)
-          .attr("class", function(d) {
-            return d["status_group"]+" waterpoint";
-          });
-      };
-    })
-
   }
 });
 
+// load data for water points
+// Using same projection as above should be OK as async?
+d3.csv("data/sample-data-filters.csv", function(error, data) {
+  if(error) {   // if error is not NULL, i.e. data file loaded wrong
+    console.log(error);
+  } else {
+    geoSVG.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", function(d) {
+        return projection([d.longitude, d.latitude])[0];
+      })
+      .attr("cy", function(d) {
+        return projection([d.longitude, d.latitude])[1];
+      })
+      .attr("r", 3)
+      .attr("class", function(d) {
+        return d["status_group"]+" waterpoint";
+      });
+  };
+});
 
 /* ********************************************************
   This is for TopoJSON. Smaller file, but no district names.
