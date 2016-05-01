@@ -32,23 +32,28 @@ d3.json("geo/TZA_adm2.topojson", function(error, json) {
     //must convert TopoJSON back to GeoJSON for display
     var subunits = topojson.feature(json, json.objects.TZA_adm2)
 
-    // bind GeoJSON features to new path elements
-    geoSVG.append("path")
+    // create new path element and bind topoJSON features to it
+    /* geoSVG.append("path")
       //.data(json.features)
       .datum(subunits)
       //.enter().append("path")
-      .attr("d", path)
-      .attr({
-        class: "region"
-      });
+      .attr("d", path);
+      */
+    geoSVG.selectAll(".TZA_adm2")
+      .data(subunits.features)
+      .enter().append("path")
+      .attr("class", "region")
+      .attr("d", path);
   }
 });
+
+// ****************************************************
+// ****************************************************
+// this is bar chart of counts of functionality values
 
 var dataset;  // global variable for the data itself
 // d3.csv is async, so if other functions require the data to
 // be loaded, include them inside this function.
-
-// this is bar chart of counts of functionality values
 d3.csv("data/counts.csv", function(error, data) {
   if(error) {   // if error is not NULL, i.e. data file loaded wrong
     console.log(error);
