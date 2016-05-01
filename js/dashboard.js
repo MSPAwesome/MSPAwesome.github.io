@@ -1,11 +1,9 @@
 // global svg width and height, in pixels
-var w = 1000;
-var h = 1000;
+// primarily for map; maybe make different vars for each viz?
+var w = 800;
+var h = 600;
 
 // Let's make some maps!
-
-
-
 
 // generate svg object in main section
 var geoSVG = d3.select("#map-viz .viz")
@@ -13,8 +11,41 @@ var geoSVG = d3.select("#map-viz .viz")
   .attr("width", w)
   .attr("height", h);
 
-// load GeoJSON and do stuff with it
-// various GeoJSON files from https://github.com/thadk/GeoTZ
+// load map and do stuff with it
+// various GeoJSON and TopoJSON files from https://github.com/thadk/GeoTZ
+
+/**********************************************************
+  This is for GeoJSON. Larger file, but has regions and names. */
+
+d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
+  if(error) {
+    console.log(error);
+  } else {
+    // log json to get a look at its structure since it crashes my text editor
+    console.log(json);
+    // path generator to translate GeoJSON to SVG path codes
+    var projection = d3.geo.mercator()
+      .center([34.8888, -6.3690])
+      .translate([w / 2, h / 2])
+      .scale(3000);
+    var path = d3.geo.path()
+      .projection(projection);
+    // bind GeoJSON features to new path elements
+    geoSVG.selectAll("path")
+      .data(json.features)
+      .enter().append("path")
+      .attr("d", path)
+      .attr({
+        class: "region"
+      });
+  }
+});
+
+
+/* ********************************************************
+  This is for TopoJSON. Smaller file, but no district names.
+  Also only starts at District level, not region level.
+
 d3.json("geo/TZA_adm2.topojson", function(error, json) {
   if(error) {
     console.log(error);
@@ -25,20 +56,14 @@ d3.json("geo/TZA_adm2.topojson", function(error, json) {
     var projection = d3.geo.mercator()
       .center([34.8888, -6.3690])
       .translate([w / 2, h / 2])
-      .scale(5000);
+      .scale(3000);
     // path generator to format projection to SVG
     var path = d3.geo.path()
       .projection(projection);
     //must convert TopoJSON back to GeoJSON for display
     var subunits = topojson.feature(json, json.objects.TZA_adm2)
 
-    // create new path element and bind topoJSON features to it
-    /* geoSVG.append("path")
-      //.data(json.features)
-      .datum(subunits)
-      //.enter().append("path")
-      .attr("d", path);
-      */
+    // create new path elements and bind topoJSON features to them
     geoSVG.selectAll(".TZA_adm2")
       .data(subunits.features)
       .enter().append("path")
@@ -46,6 +71,7 @@ d3.json("geo/TZA_adm2.topojson", function(error, json) {
       .attr("d", path);
   }
 });
+**************************************************************/
 
 // ****************************************************
 // ****************************************************

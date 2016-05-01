@@ -37,9 +37,9 @@ figcaption {
 
 p {
   margin-bottom: 50px;
-  text-align: center;
 }
-/* selectors actual visualizations */
+
+/* selectors for actual visualizations */
 /* NOTE! #id is MORE specific than class, and
 class is more specific than element name, so
 #id will override .class */
