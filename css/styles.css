@@ -13,7 +13,7 @@ CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
 
 /* page table of contents. NOTE site toc is below, in header section */
 #page-nav {
-  
+
 }
 
 /* rest of page */
@@ -21,6 +21,7 @@ h1, h2, h3 {
   font-family: 'Montserrat', sans-serif;
   font-weight: normal;
   text-align: center;
+  padding-top: 15px;
 }
 h1 {
   font-size: 175%;
@@ -86,12 +87,11 @@ path.region:hover {
 /*******************************************************/
 /****     BAR CHART     **************************************/
 /******************************************************/
-.viz text.barChart {
+#barChart-viz .viz {
     font-family: 'Montserrat', sans-serif;
-    font-size: 150%;
+    font-size: 115%;
+    font-weight: bold;
 }
-
-
 
 /* image selectors. will have to change to svg element or something
 when we migrate to javascript */

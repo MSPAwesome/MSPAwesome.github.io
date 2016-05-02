@@ -1,7 +1,7 @@
 // global svg width and height, in pixels
 // primarily for map; maybe make different vars for each viz?
 var w = 800;
-var h = 600;
+var h = 800;
 
 // Let's make some maps!
 
@@ -152,8 +152,7 @@ d3.csv("data/counts.csv", function(error, data) {
             return i * (w / dataset.length) + 15;
          })
          .attr("y", function(d) {
-            return h - (+d["Freq"]/100) + 30;
-         })
-         .attr("fill", "white");
+            return h - +d["Freq"]/100 + 30;
+         });
   }
 });
