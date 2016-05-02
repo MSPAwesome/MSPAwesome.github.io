@@ -1,7 +1,7 @@
 // global svg width and height, in pixels
 // primarily for map; maybe make different vars for each viz?
-var w = 800;
-var h = 800;
+var w = 600;
+var h = 600;
 
 // Let's make some maps!
 
@@ -108,7 +108,7 @@ d3.csv("data/counts.csv", function(error, data) {
   if(error) {   // if error is not NULL, i.e. data file loaded wrong
     console.log(error);
   } else { // if file loaded correctly, go on with it
-    h = h / 2
+    h = h * 0.65
     var barPadding = 5;
 
     // Assign CSV data to variable so we can get it later

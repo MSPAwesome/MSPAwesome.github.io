@@ -9,7 +9,7 @@
 
   <body>
   	<header>
-  		<h1>Water Pump Functionality Dashboard</h1>
+  		<h1 id="title">Water Pump Functionality Dashboard</h1>
   		<nav id="site-nav">
   			<ul>
   				<li><a href="index.html">Home</a></li>
@@ -22,17 +22,21 @@
     <!-- "main" section is to tag this semantically, and keep it a sibling of
     "header" and "footer" -->
     <main role="main">
-      <aside id="toc">
-        <!-- eventually try to add dynamically with JavaScript -->
-        <nav id="page-nav">
-          <ul>
-            <li><a href="#map-of-tanzania">Map of Tanzania</a></li>
-            <li><a href="#functionality-totals">Functionality Totals</a></li>
-            <li><a href="#status-by-year-of-construction">Water Point Status by Year of Construction</a></li>
-            <li><a href="#status-by-year-of-construction">Water Point Status by Year of Construction</a></li>
-          </ul>
-        </nav>
-      </aside>
+      <section id="page-toc">
+        <aside>
+          <h1 id="on-this-page">On this page</h1>
+          <!-- eventually try to add dynamically with JavaScript -->
+          <nav id="page-nav">
+            <ul>
+              <li><a href="#title">Water Pump Functionality Dashboard</a></li>
+              <li><a href="#map-of-tanzania">Map of Tanzania</a></li>
+              <li><a href="#functionality-totals">Functionality Totals</a></li>
+              <li><a href="#status-by-year-of-construction">Water Point Status by Year of Construction</a></li>
+              <li><a href="#status-by-year-of-construction">Water Point Status by Year of Construction</a></li>
+            </ul>
+          </nav>
+        </aside>
+      </section>
       <!-- add a section for each visual, with a descriptive id attribute.
           Note, "id" must be unique. Everything related to this specific visual
           should go inside the section tags -->
@@ -51,6 +55,7 @@
           </p>
         </figure>
       </section>
+
       <section id="barChart-viz">
         <!-- each section should have an H1, to use in the TOC nav element -->
         <h1 id="functionality-totals">Functionality Totals</h1>
@@ -66,6 +71,7 @@
           </p>
         </figure>
       </section>
+
   	  <section id="status-year">
         <h1 id="status-by-year-of-construction">Water Point Status by Year of Construction</h1>
   	    <figure>
