@@ -40,30 +40,31 @@ d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
       .attr({
         class: "region"
       });
-  }
-});
 
-// load data for water points
-// Using same projection as above should be OK as async?
-d3.csv("data/sample-data-filters.csv", function(error, data) {
-  if(error) {   // if error is not NULL, i.e. data file loaded wrong
-    console.log(error);
-  } else {
-    geoSVG.selectAll("circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("cx", function(d) {
-        return projection([d.longitude, d.latitude])[0];
-      })
-      .attr("cy", function(d) {
-        return projection([d.longitude, d.latitude])[1];
-      })
-      .attr("r", 3)
-      .attr("class", function(d) {
-        return d["status_group"]+" waterpoint";
-      });
-  };
+
+    // load data for water points
+    // Using same projection as above should be OK as async?
+    d3.csv("data/sample-data-filters.csv", function(error, data) {
+      if(error) {   // if error is not NULL, i.e. data file loaded wrong
+        console.log(error);
+      } else {
+        geoSVG.selectAll("circle")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("cx", function(d) {
+            return projection([d.longitude, d.latitude])[0];
+          })
+          .attr("cy", function(d) {
+            return projection([d.longitude, d.latitude])[1];
+          })
+          .attr("r", 3)
+          .attr("class", function(d) {
+            return d["status_group"]+" waterpoint";
+          });
+      };
+    });
+  }
 });
 
 /* ********************************************************
