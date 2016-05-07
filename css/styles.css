@@ -18,7 +18,11 @@ CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
   top: 150px;
   left: 80%;
   float: right;
-}
+  }
+
+#page-nav li a {
+  color: rgb(145,191,219);
+  text-decoration: none;}
 
 /* rest of page */
 h1, h2, h3 {
@@ -145,12 +149,11 @@ header h1 {
   margin: 0%;
 }
 
-#site-nav {
+.nav {
   position: relative;
   bottom: auto;
 }
-
-#site-nav, footer {
+.nav, footer {
   /* aside.toc will also have a nav,
   so making sure these are only in header */
   background-color: rgb(145,191,219);
@@ -160,17 +163,17 @@ header h1 {
   color: black;
 }
 
-#site-nav ul {
+.nav ul {
   margin: 0px;
   padding: 5px 0px 5px 30px;
 }
 
-#site-nav li {
+.nav li {
  display: inline;
  margin-right: 40px;
 }
 
-nav li a {
+.nav li a {
   color: black;
   font-weight: bold;
   text-decoration: none;
