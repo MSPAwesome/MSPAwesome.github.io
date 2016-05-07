@@ -158,36 +158,3 @@ d3.csv("data/counts.csv", function(error, data) {
   }
 });
 
-var dataset1; //data set for scatter plot
-
-d3.csv("data/Status_Const-Year.csv", function(error, data) {
-	if(error) {   // if error is not NULL, i.e. data file loaded wrong
-    console.log(error);
-	} else { // if file loaded correctly, go on with it
-	
-	dataset1 = data;
-	
-	var svg1 = d3.select("#status-year .viz")
-      .append("svg")
-      .attr("width", w)
-      .attr("height", h)
-      .attr("class", "status-year");
-	  
-	// create svg elements and bind data to them
-    svg1.selectAll("circle")
-       //ID_Count is the count of water points by functional status and construction year
-      .data(dataset1)
-      .enter()
-      .append("circle")  
-	  .attr("cx", function(d) {
-			return d["Const-Year"];
-	  })
-	  .attr("cy", function(d) {
-			return d["ID_Count"];
-	  })
-	  .attr("r",10);
-	  .attr("class", function(d) {
-        return d["Var1"];
-      });
-	}
-});
