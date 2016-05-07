@@ -171,7 +171,7 @@ d3.csv("data/Status_Const-Year.csv", function(error, data) {
       .append("svg")
       .attr("width", w)
       .attr("height", h)
-      //.attr("class", "status-year");
+      .attr("class", "status-year");
 	  
 	// create svg elements and bind data to them
     svg1.selectAll("circle")
