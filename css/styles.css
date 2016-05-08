@@ -78,6 +78,10 @@ colorblind compatible */
 }
 .non-functional {     /* orange */
   fill: rgb(252,141,89);
+}
+
+#map-viz .non-functional {     /* orange */
+  fill: rgb(252,141,89);
   animation: blink .75s linear infinite;
 }
 @keyframes blink {
