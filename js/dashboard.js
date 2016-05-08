@@ -52,6 +52,7 @@ d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
           .data(data)
           .enter()
           .append("circle")
+          .transition()
           .attr("cx", function(d) {
             return projection([d.longitude, d.latitude])[0];
           })
@@ -170,54 +171,54 @@ d3.csv("data/Status_Const-Year.csv", function(error, data) {
 	if(error) {   // if error is not NULL, i.e. data file loaded wrong
     console.log(error);
 	} else { // if file loaded correctly, go on with it
-	
+
 	w = 800
 	h = 600
-	
-	
+
+
 	dataset1 = data;
-	
+
 	var svg1 = d3.select("#status-year .viz")
       .append("svg")
       .attr("width", w)
       .attr("height", h)
       .attr("class", "status-year");
-	  
+
 	var padding = 50;
-	
+
 	var formatwhole = d3.format("d")
-	
+
 	var xscale = d3.scale.linear()	//creating scale function to scale x axis for scatterplot
 		.domain([1955,
 			d3.max(dataset1,function(d) {
 				return d["Const-Year"];})])
-		.range([padding,w - padding]);	
+		.range([padding,w - padding]);
 
 	var yscale = d3.scale.linear()	//creating scale function to scale y axis for scatterplot
 		.domain([0, 2050]) //max function not seeming to work - need to spend time working later, also not sure why there are 5 dots at top rather than proper place
 			//d3.max(dataset1,function(d) {
 				//return d["ID_Count"];})])
-					
-		.range([ h - padding , 0]);	
+
+		.range([ h - padding , 0]);
 
 	var xAxis = d3.svg.axis()
 		.scale(xscale)
 		.orient("bottom")
 		.ticks(10)
 		.tickFormat(formatwhole);
-		
+
 	var yAxis = d3.svg.axis()
 		.scale(yscale)
 		.orient("left")
 		.ticks(10);
-	
-	
+
+
 	// create svg elements and bind data to them
     svg1.selectAll("circle")
        //ID_Count is the count of water points by functional status and construction year
       .data(dataset1)
       .enter()
-      .append("circle")  
+      .append("circle")
 	  .attr("cx", function(d) {
 			return xscale(d["Const-Year"]);
 	  })
@@ -228,15 +229,15 @@ d3.csv("data/Status_Const-Year.csv", function(error, data) {
 	  .attr("class", function(d) {
         return d["Var1"];
       });
-	  
+
 	svg1.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate(0," + (h- padding) + ")")
 		.call(xAxis);
-		
+
 	svg1.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate(" + padding + ",0)")
-		.call(yAxis);	
+		.call(yAxis);
 	}
 });
