@@ -59,7 +59,11 @@ figcaption {
 
 p {
   margin-bottom: 50px;
-}
+} 
+
+.content {
+  text-align: left;
+  padding: 0px 50px;}
 
 /* selectors for actual visualizations
  NOTE! #id is MORE specific than class, and
