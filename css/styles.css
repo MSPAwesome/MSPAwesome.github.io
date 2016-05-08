@@ -21,7 +21,7 @@ CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
   }
 
 #page-nav li a {
-  color: rgb(145,191,219);
+    color: rgb(145,191,219);
   text-decoration: none;}
 
 /* rest of page */
@@ -127,6 +127,21 @@ height: 50%;
 img.small {
 width: 20%;
 height: 20%;
+}
+/********************************************************************/
+/*******   SCATTER PLOT *********************************************/
+/********************************************************************/
+
+.axis path,
+.axis line { 
+     fill: none;
+     stroke: black;
+     shape-rendering: crispEdges;
+}
+
+.axis text {
+     font-family: sans-serif;
+     font-size: 15px;
 }
 
 /*********************
