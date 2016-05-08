@@ -21,7 +21,7 @@ CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
   }
 
 #page-nav li a {
-    color: rgb(145,191,219);
+  color: black;
   text-decoration: none;}
 
 /* rest of page */
