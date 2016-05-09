@@ -17,6 +17,9 @@ var projection = d3.geo.mercator()
   .translate([w / 2, h / 2])
   .scale(3000);
 
+// variable to hold main data set
+var mapPointsData;
+
 // load map and do stuff with it
 // various GeoJSON and TopoJSON files from https://github.com/thadk/GeoTZ
 
@@ -48,25 +51,27 @@ d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
       if(error) {   // if error is not NULL, i.e. data file loaded wrong
         console.log(error);
       } else {
+        mapPointsData = data;
+
         geoSVG.selectAll("circle")
-          .data(data)
+          .data(mapPointsData)
           .enter()
           .append("circle")
-          .transition()
           .attr("cx", function(d) {
             return projection([d.longitude, d.latitude])[0];
           })
           .attr("cy", function(d) {
             return projection([d.longitude, d.latitude])[1];
           })
-          .attr("r", 3)
           .attr("class", function(d) {
             return d["status_group"]+" waterpoint";
-          });
+          })
+          .attr("r", 3);
       };
     });
   }
 });
+
 
 /* ********************************************************
   This is for TopoJSON. Smaller file, but no district names.

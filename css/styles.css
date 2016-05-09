@@ -76,16 +76,6 @@ legend {
   text-align: left;
 }
 
-input#mapSubmit {
-  margin-top: 1em;
-  color: white;
-  font-weight: bold;
-  background-color: #444;
-  border: 1px solid black;
-  border-radius: 10px;
-  padding: 5px 15px;
-  width:
-}
 .content {
   text-align: left;
   padding: 0px 50px;}
