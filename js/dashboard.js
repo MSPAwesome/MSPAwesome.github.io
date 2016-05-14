@@ -194,7 +194,7 @@ d3.csv("data/Status_Const-Year.csv", function(error, data) {
 		.range([padding,w - padding]);	
 
 	var yscale = d3.scale.linear()	//creating scale function to scale y axis for scatterplot
-		.domain([0, 2050]) //max function not seeming to work - need to spend time working later, also not sure why there are 5 dots at top rather than proper place
+		.domain([0, 2050]) //max function not seeming to work - need to spend time working later, also not sure why there are 5 dots at top rather than in their proper place
 			//d3.max(dataset1,function(d) {
 				//return d["ID_Count"];})])
 					
@@ -240,3 +240,9 @@ d3.csv("data/Status_Const-Year.csv", function(error, data) {
 		.call(yAxis);	
 	}
 });
+
+//*******************************************
+// This is a stacked bar that shows functional status by region
+//**************************************************
+
+

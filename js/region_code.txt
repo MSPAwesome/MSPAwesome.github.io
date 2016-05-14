@@ -1,0 +1,38 @@
+var dataset-region; 
+
+d3.csv("data/Region_Status.csv", function(error, data) {
+	if(error) {   // if error is not NULL, i.e. data file loaded wrong
+    console.log(error);
+	} else { // if file loaded correctly, go on with it
+	
+	w = 800
+	h = 600
+	barPadding = 2
+	
+	dataset-region = data;
+	
+	var svg-region = d3.select("#status-region .viz")
+      .append("svg")
+      .attr("width", w)
+      .attr("height", h);
+	
+	svg-region.selectAll("rect")
+       //ID_Count is the count of water points by functional status and construction year
+      .data(dataset-region)
+      .enter()
+      .append("rect")  
+	  .attr("x", function(d, i) {
+        return i * (w / dataset.length);
+      })
+      .attr("width", w / dataset.length - barPadding)
+      .attr("y", function(d) {
+        return h - +d["Freq"]/100;
+      })
+      .attr("height", function(d) {
+        return +d["Freq"]/100;
+      })
+      .attr("class", function(d) {
+        return d["Var1"];
+      });
+	}
+});

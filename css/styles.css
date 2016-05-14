@@ -140,8 +140,7 @@ height: 20%;
 /*******   SCATTER PLOT *********************************************/
 /********************************************************************/
 
-.axis path,
-.axis line { 
+.axis path, .axis line { 
      fill: none;
      stroke: black;
      shape-rendering: crispEdges;
@@ -151,6 +150,17 @@ height: 20%;
      font-family: sans-serif;
      font-size: 15px;
 }
+
+/********************************************************************/
+/*******   Tableau Dashboard*****************************************/
+/********************************************************************/
+
+.tableauPlaceholder {
+    margin: auto;
+    width: 50%;
+    height: 50%;
+}
+
 
 /*********************
 styles for svg elements created with d3;
