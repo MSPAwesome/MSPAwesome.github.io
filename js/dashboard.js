@@ -5,6 +5,48 @@ var h = 600;
 
 // Let's make some maps!
 // various GeoJSON and TopoJSON files from https://github.com/thadk/GeoTZ
+
+// ####################################################################
+//    FUNCTIONS
+// ####################################################################
+var checkedStatus = "non-functional";
+// function getStatus() {
+//
+// }
+
+// class="region" for general CSS, plus class for status
+// id=NAME_01 = may need for labels at some point
+function setMapAttr(selection) {
+  selection.attr({
+    id: function(d) { return d.properties.NAME_1; },
+    opacity: function(d) {
+      // if regions don't match, will be missing percent, so check if it
+      // exists and if not, return default
+      var opPct = d.properties.percent
+      if (opPct) {
+        return(opPct);
+      } else {
+        // default fill is black, so this will produce gray for no data
+        return 0.25;
+      }
+    },
+    class: function(d) {
+      // get which radio button is checked
+      // checkedStatus = getStatus();
+
+      // if the element has a percent value, return status class,
+      // which defines the fill color (in CSS)
+      if (d.properties.percent) {
+        return("region " + checkedStatus);
+      } else {
+        // otherwise assign to class "missing"
+        console.log("missing: " + d.properties.NAME_1);
+        return("region missing");
+      }
+    }
+  })
+}
+
 // generate svg object at botto mof "#map-viz" div class ".viz"
 var geoSVG = d3.select("#map-viz .viz")
   .append("svg")
@@ -25,8 +67,6 @@ iterate through the csv once to match region names, not at ever transition.*/
 d3.csv("data/regions.csv", function(data) {
   // grab dataset in variable, delcare other variables here, outside loops
   regionData = data;
-  // default status, can make a function in the future it that's useful
-  var checkedStatus = "non-functional";
   var i;
   var j;
   var dataRegion;
@@ -63,30 +103,7 @@ d3.csv("data/regions.csv", function(data) {
         .data(json.features)
         .enter().append("path")
         .attr("d", path) // <-- our projection from above
-        // class="region" for general CSS
-        // id=NAME_01 = may need for labels at some point
-        .attr({
-          id: function(d) { return d.properties.NAME_1; },
-          opacity: function(d) {
-            // if regions don't match, will be missing percent, so check if it
-            // exists and if not, return default
-            if (d.properties.percent) {
-              return(d.properties.percent);
-            } else {
-              // full opacity if no data -- will set fill to gray with class
-              return 1;
-            }
-          },
-          class: function(d) {
-            // only set status class if we have data from csv
-            if (d.properties.percent) {
-              return("region " + checkedStatus);
-            } else {
-              console.log("missing: " + d.properties.NAME_1);
-              return("region missing");
-            }
-          }
-        });
+        .call(setMapAttr);
 
 
       // // load data for water points

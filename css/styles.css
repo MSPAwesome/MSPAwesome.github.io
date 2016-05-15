@@ -3,7 +3,7 @@ body {
   font-family: Georgia, Times, serif;
   font-size: 100%;
   line-height: 1.4em;
-  background-color: #999999;
+  /*background-color: #999999;*/
   text-decoration-color: white;
 }
 
@@ -180,7 +180,6 @@ use this for universal element styles
 svg {
   display: block;
   margin:auto;
-  fill: white;  /* default, rather than black */
 }
 
 
