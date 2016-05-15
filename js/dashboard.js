@@ -70,7 +70,7 @@ var projection = d3.geo.mercator()
   .scale(3000);
 
 // variable to hold main data set; may use outside map function
-var regionData;
+var regionData, jsonData;
 
 /* load csv data first, then merge with map data. This way we only have to
 iterate through the csv once to match region names, not at ever transition.*/
@@ -88,6 +88,7 @@ d3.csv("data/regions.csv", function(data) {
     } else {
       // log json to get a look at its structure since it crashes my text editor
       // console.log(json);
+      jsonData = json;
 
       // loop through csv to get region name and percent
       for (var i = 0; i < regionData.length; i++) {
@@ -95,10 +96,10 @@ d3.csv("data/regions.csv", function(data) {
         dataValue = regionData[i][checkedStatus];
 
         // lookup that region in json, add percent values
-        for (var j = 0; j < json.features.length; j++) {
-          mapRegion = json.features[j].properties.NAME_1;
+        for (var j = 0; j < jsonData.features.length; j++) {
+          mapRegion = jsonData.features[j].properties.NAME_1;
           if (dataRegion == mapRegion) {
-            json.features[j].properties.percent = dataValue;
+            jsonData.features[j].properties.percent = dataValue;
             break;
           }
         }
@@ -108,7 +109,7 @@ d3.csv("data/regions.csv", function(data) {
       var path = d3.geo.path().projection(projection);
       // bind GeoJSON features (incl percent) to new path elements
       geoSVG.selectAll("path")
-        .data(json.features)
+        .data(jsonData.features)
         .enter().append("path")
         .attr("d", path) // <-- our projection from above
         .call(setMapAttr);
@@ -142,7 +143,12 @@ d3.csv("data/regions.csv", function(data) {
   })
 });
 
-
+d3.selectAll("input")
+  .on("click", function() {
+    geoSVG.selectAll("path")
+      .data(jsonData.features)
+      .call(setMapAttr);
+  });
 /* ********************************************************
   This is for TopoJSON. Smaller file, but no district names.
   Also only starts at District level, not region level.
