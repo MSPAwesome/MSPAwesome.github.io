@@ -33,6 +33,16 @@
 	<br/>
 	<br/>
 	We further examined the 39 variables in the training data set to determine if any would benefit from being imputed or transformed, or if there were opportunities to create new useful variables. During the modeling process, we split the training set into two random data sets: one to serve as model training and the second for validation. We are confident in a 70/30 split because the classification rates we obtained from the validation set were very similar to the results obtained from DrivenData for the testing data set.
-	</p>	
+	</p>
+	<h2>Modeling Overview</h2>
+	<p class="content">
+	We do not need real-time model results, or even at a daily or weekly frequency. We have determined that the model will likely be run quarterly, for two main reasons. First, since updated water-point observations come from the repair team, it will take a few months for enough new observations to come in to make re-fitting the model necessary. Second, quarterly model runs allow for better planning of the upcoming work for the next three months.
+	<br/>
+	<br/>
+	With that in mind, we have determined that we can sacrifice model performance (i.e., speed) for accuracy. In fact, given the cost and delays associated with inaccurate predictions, model interpretability is also a lesser consideration. Therefore, we considered so-called black box models such as random forests, neural networks, and gradient boosting.
+	<br/>
+	<br/>
+	Though out of scope for the current project, in the event this project expands beyond Tanzania in the future, we would need to revisit the model speed limitations, as the amount of data and frequency of model executions would certainly increase.
+	<p/>
    </body>
 </html>
