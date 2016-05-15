@@ -105,9 +105,13 @@ path.region:not(.missing):hover {
 }
 
 /* try to use these classes for all dynamically created content that
-needs to be color-coded for target values.
-NOTE: changed from red-yellow-green to red-orange-blue to make it
-colorblind compatible */
+needs to be color-coded for target values. */
+
+/* set fill to white behind region-level opacity */
+#Tanzania {
+  fill: white;
+}
+
 .functional {
   /*fill: rgb(145,191,219);   /* blue */
   fill: rgb(49,54,149);
