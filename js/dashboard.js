@@ -9,15 +9,18 @@ var h = 600;
 // ####################################################################
 //    FUNCTIONS
 // ####################################################################
+// default at page load
 var checkedStatus = "non-functional";
 // get the text (i.e., status_group value) of currently selected radio button
 function getStatus() {
   var form, options;
+  console.log("checking status");
   form = document.getElementById('currentStatus');
   options = form.elements.status_group;
   for (var i = 0; i < options.length; i++) {
     if (options[i].checked) {
       return options[i].value;
+      console.log("checkedStatus: " + options[i].checked);
       break;
     }
   }
@@ -26,27 +29,27 @@ function getStatus() {
 // class="region" for general CSS, plus class for status
 // id=NAME_01 = may need for labels at some point
 function setMapAttr(selection) {
+  var opPct;
+  // get which radio button is checked
+  checkedStatus = getStatus();
+
+  // set attributes on path elements based on checkedStatus
   selection.attr({
     id: function(d) { return d.properties.NAME_1; },
+    // opacity is percent of total wells that meet the checkedStatus value
     opacity: function(d) {
-      // if regions don't match, will be missing percent, so check if it
-      // exists and if not, return default
-      var opPct = d.properties.percent
+      opPct = +d.properties[checkedStatus];
+      // validate property exists, because not all regions are in csv
       if (opPct) {
         return(opPct);
       } else {
-        // default fill is black, so this will produce gray for no data
-        return 0.25;
+        // transparent if missing, also set stroke-width to 0 so won't appear
+        return 0;
       }
     },
     class: function(d) {
-      // get which radio button is checked
-      // checkedStatus = getStatus();
-
-      // if the element has a percent value, return status class,
-      // which defines the fill color (in CSS)
-      if (d.properties.percent) {
-        checkedStatus = getStatus();
+      // if the property for the checkedStatus, set class as that checkedStatus, which defines the fill color (in CSS). Also include "region" for gen CSS rules. If no checkedStatus property, add "missing" class.
+      if (+d.properties[checkedStatus]) {
         return("region " + checkedStatus);
       } else {
         // otherwise assign to class "missing"
@@ -69,7 +72,7 @@ var projection = d3.geo.mercator()
   .translate([w / 2, h / 2])
   .scale(3000);
 
-// variable to hold main data set; may use outside map function
+// variable to hold main data sets; may use outside map function
 var regionData, jsonData;
 
 /* load csv data first, then merge with map data. This way we only have to
@@ -78,7 +81,6 @@ d3.csv("data/regions.csv", function(data) {
   // grab dataset in variable, delcare other variables here, outside loops
   regionData = data;
   var dataRegion;
-  var dataValue;
   var mapRegion;
 
   // This code is for GeoJSON--larger file than TopoJSON, but has region names
@@ -86,20 +88,29 @@ d3.csv("data/regions.csv", function(data) {
     if(error) {
       console.log(error);
     } else {
-      // log json to get a look at its structure since it crashes my text editor
-      // console.log(json);
+      // store json in global scope var to access it later for updates
       jsonData = json;
+      var jsonFeature;
+      var csvRow;
+      var prop;
+      // loop through json features (i.e., regions) ...
+      for (var i = 0; i < jsonData.features.length; i++) {
+        // ...  to get region name ...
+        jsonFeature = jsonData.features[i].properties
+        mapRegion = jsonFeature.NAME_1;
 
-      // loop through csv to get region name and percent
-      for (var i = 0; i < regionData.length; i++) {
-        dataRegion = regionData[i].region;
-        dataValue = regionData[i][checkedStatus];
-
-        // lookup that region in json, add percent values
-        for (var j = 0; j < jsonData.features.length; j++) {
-          mapRegion = jsonData.features[j].properties.NAME_1;
+        // ... then loop through csv to find matching row ...
+        for (var j = 0; j < regionData.length; j++) {
+          csvRow = regionData[j];
+          dataRegion = csvRow.region;
+          // ... when we find a match ...
           if (dataRegion == mapRegion) {
-            jsonData.features[j].properties.percent = dataValue;
+            console.log("match: " + dataRegion);
+            // /... add each column:value pair to json properties
+            Object.keys(csvRow).forEach(function(key) {
+              prop = key;
+              jsonFeature[prop] = csvRow[key];
+            })
             break;
           }
         }

@@ -117,9 +117,9 @@ colorblind compatible */
   /*fill: rgb(252,141,89);*/
   fill: rgb(215,25,28);
 }
-/*.missing {
-  fill: white;
-}*/
+.missing {
+  stroke-width: 0;
+}
 /*
 #map-viz .non-functional {
   fill: rgb(252,141,89);
