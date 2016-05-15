@@ -127,6 +127,9 @@ margin: 0 auto;
 border: 2px solid #000080;
 }
 
+img.no-border {
+border: none;
+}
 img.large {
 width: 50%;
 height: 50%;
