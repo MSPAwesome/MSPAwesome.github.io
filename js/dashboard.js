@@ -1,6 +1,6 @@
 // global svg width and height, in pixels
 // primarily for map; maybe make different vars for each viz?
-var w = 600;
+var w = 1000;
 var h = 600;
 
 // Let's make some maps!
