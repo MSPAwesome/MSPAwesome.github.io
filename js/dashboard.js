@@ -33,7 +33,7 @@ function getStatus() {
 }
 
 // class="region" for general CSS, plus class for status
-// id=NAME_01 = may need for labels at some point
+
 function setMapAttr(selection) {
   var opPct;
   // get which radio button is checked
@@ -41,8 +41,13 @@ function setMapAttr(selection) {
 
   // set attributes on path elements based on checkedStatus
   selection
+    // regions store name as NAME_1 property but country is ENGLI_NAME
     .attr("id", function(d) {
-      return d.properties.NAME_1;
+      if (d.properties.NAME_1) {
+        return d.properties.NAME_1;
+      } else {
+        return d.properties.NAME_ENGLI;
+      }
     })
     // opacity is percent of total wells that meet the checkedStatus value
     .style("fill-opacity", function(d) {
@@ -51,8 +56,8 @@ function setMapAttr(selection) {
       if (opPct) {
         return(opPct);
       } else {
-        // transparent if missing, also set stroke-width to 0 so won't appear
-        return 0;
+        // country path or region missing from CSV.
+        return 1;
       }
     })
     .attr("class", function(d) {
@@ -60,7 +65,7 @@ function setMapAttr(selection) {
       if (+d.properties[checkedStatus]) {
         return("region " + checkedStatus);
       } else {
-        // otherwise assign to class "missing"
+        // otherwise assign to class "missing"; includes country-path
         return("region missing");
       }
     });
@@ -81,92 +86,84 @@ var projection = d3.geo.mercator()
 // create path variable with our projection
 var path = d3.geo.path().projection(projection);
 
-// draw single path for the whole country, to control fill/background-color
-// behind the regions (which will have opacity)
-d3.json("geo/TZA_adm0_tanzanianzima.geojson", function(countryMap) {
-  console.log(countryMap);
-  geoSVG.selectAll("path")
-    .data(countryMap.features)
-    .enter().append("path")
-    .attr("d", path) // <-- our projection from above
-    .attr("id", "Tanzania");
+/* load csv data here, then merge with map data. This way we only have to
+iterate through the csv once to match region names, not at ever transition.*/
+d3.csv("data/regions.csv", function(data) {
+  // grab dataset in variable, delcare other variables here, outside loops
+  regionData = data;
+  var dataRegion;
+  var mapRegion;
 
-  /* load csv data here, then merge with map data. This way we only have to
-  iterate through the csv once to match region names, not at ever transition.*/
-  d3.csv("data/regions.csv", function(data) {
-    // grab dataset in variable, delcare other variables here, outside loops
-    regionData = data;
-    var dataRegion;
-    var mapRegion;
+  // This code is for GeoJSON--larger file than TopoJSON, but has region names
+  d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
+    if(error) {
+      console.log(error);
+    } else {
+      // log json -- easier to read than in text editor
+      console.log(json);
+      // store json in global scope var to access it later for updates
+      jsonData = json;
+      var jsonFeature;
+      var csvRow;
 
-    // This code is for GeoJSON--larger file than TopoJSON, but has region names
-    d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
-      if(error) {
-        console.log(error);
-      } else {
-        // log json -- easier to read than in text editor
-        console.log(json);
-        // store json in global scope var to access it later for updates
-        jsonData = json;
-        var jsonFeature;
-        var csvRow;
-        var prop;
-        // loop through json features (i.e., regions) ...
-        for (var i = 0; i < jsonData.features.length; i++) {
-          // ...  to get region name ...
-          jsonFeature = jsonData.features[i].properties
-          mapRegion = jsonFeature.NAME_1;
+      // loop through json features (i.e., regions) ...
+      for (var i = 0; i < jsonData.features.length; i++) {
+        // ...  to get region name ...
+        jsonFeature = jsonData.features[i].properties
+        // (note, country object does not have NAME_1 property...
+        mapRegion = jsonFeature.NAME_1;
 
+        // ... so verify we have a value here first)
+        if (mapRegion) {
           // ... then loop through csv to find matching row ...
           for (var j = 0; j < regionData.length; j++) {
             csvRow = regionData[j];
             dataRegion = csvRow.region;
             // ... when we find a match ...
             if (dataRegion == mapRegion) {
-              // /... add each column:value pair to json properties
+              // ... add each column:value pair to json properties (for everything except country path, of course)
               Object.keys(csvRow).forEach(function(key) {
-                prop = key;
-                jsonFeature[prop] = csvRow[key];
+                jsonFeature[key] = csvRow[key];
               })
               break;
             }
           }
         }
-
-        // bind GeoJSON features (incl percent) to new path elements
-        geoSVG.selectAll("path")
-          .data(jsonData.features)
-          .enter().append("path")
-          .attr("d", path) // <-- our projection from above
-          .call(setMapAttr);
-
-
-        // // load data for water points
-        // // Using same projection as above should be OK as async?
-        // d3.csv("data/sample-data-filters.csv", function(error, data) {
-        //   if(error) {   // if error is not NULL, i.e. data file loaded wrong
-        //     console.log(error);
-        //   } else {
-        //     mapPointsData = data;
-        //
-        //     geoSVG.selectAll("circle")
-        //       .data(mapPointsData)
-        //       .enter()
-        //       .append("circle")
-        //       .attr("cx", function(d) {
-        //         return projection([d.longitude, d.latitude])[0];
-        //       })
-        //       .attr("cy", function(d) {
-        //         return projection([d.longitude, d.latitude])[1];
-        //       })
-        //       .attr("class", function(d) {
-        //         return d["status_group"]+" waterpoint";
-        //       })
-        //       .attr("r", 3);
-        //   };
-        // });
       }
-    })
+
+      // bind GeoJSON features (incl percent) to new path elements
+      geoSVG.selectAll("path")
+        .data(jsonData.features)
+        .enter().append("path")
+        .attr("d", path) // <-- our projection from above
+        .call(setMapAttr);
+
+
+      // // load data for water points
+      // // Using same projection as above should be OK as async?
+      // d3.csv("data/sample-data-filters.csv", function(error, data) {
+      //   if(error) {   // if error is not NULL, i.e. data file loaded wrong
+      //     console.log(error);
+      //   } else {
+      //     mapPointsData = data;
+      //
+      //     geoSVG.selectAll("circle")
+      //       .data(mapPointsData)
+      //       .enter()
+      //       .append("circle")
+      //       .attr("cx", function(d) {
+      //         return projection([d.longitude, d.latitude])[0];
+      //       })
+      //       .attr("cy", function(d) {
+      //         return projection([d.longitude, d.latitude])[1];
+      //       })
+      //       .attr("class", function(d) {
+      //         return d["status_group"]+" waterpoint";
+      //       })
+      //       .attr("r", 3);
+      //   };
+      // });
+    }
   })
 });
 

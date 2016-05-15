@@ -89,7 +89,7 @@ class is more specific than element name, so
 /*******************************************************/
 /****     MAP     **************************************/
 /******************************************************/
-path.region { /* path is for map; could be "#map path.region" if needed */
+path.region:not(.missing) { /* path is for map; could be "#map path.region" if needed */
   stroke: black;
   /*stroke-width: 1px;*/
   pointer-events: all;
@@ -107,26 +107,31 @@ path.region:not(.missing):hover {
 /* try to use these classes for all dynamically created content that
 needs to be color-coded for target values. */
 
-/* set fill to white behind region-level opacity */
+
+
+.functional {
+  /*fill: rgb(145,191,219);   /* blue */
+  fill: #4575b4;
+}
+.functional-needs-repair {    /* yellow */
+  /*fill: rgb(255,255,191);*/
+  fill: #fee090;
+}
+.non-functional {     /* orange */
+  /*fill: rgb(252,141,89);*/
+  fill: #d73027;
+}
+.missing {
+  fill: #999999;  /* to match background-color */
+  stroke-opacity: 0;
+}
+
+/* set country-level path fill to white, behind region-level opacity */
 #Tanzania {
   fill: white;
 }
 
-.functional {
-  /*fill: rgb(145,191,219);   /* blue */
-  fill: rgb(49,54,149);
-}
-.functional-needs-repair {    /* yellow */
-  /*fill: rgb(255,255,191);*/
-  fill: rgb(244,109,67);
-}
-.non-functional {     /* orange */
-  /*fill: rgb(252,141,89);*/
-  fill: rgb(165,0,38);
-}
-.missing {
-  stroke-width: 0;
-}
+
 /*
 #map-viz .non-functional {
   fill: rgb(252,141,89);
