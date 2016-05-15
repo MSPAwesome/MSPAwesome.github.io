@@ -10,9 +10,18 @@ var h = 600;
 //    FUNCTIONS
 // ####################################################################
 var checkedStatus = "non-functional";
-// function getStatus() {
-//
-// }
+// get the text (i.e., status_group value) of currently selected radio button
+function getStatus() {
+  var form, options;
+  form = document.getElementById('currentStatus');
+  options = form.elements.status_group;
+  for (var i = 0; i < options.length; i++) {
+    if (options[i].checked) {
+      return options[i].value;
+      break;
+    }
+  }
+}
 
 // class="region" for general CSS, plus class for status
 // id=NAME_01 = may need for labels at some point
@@ -37,6 +46,7 @@ function setMapAttr(selection) {
       // if the element has a percent value, return status class,
       // which defines the fill color (in CSS)
       if (d.properties.percent) {
+        checkedStatus = getStatus();
         return("region " + checkedStatus);
       } else {
         // otherwise assign to class "missing"
@@ -67,8 +77,6 @@ iterate through the csv once to match region names, not at ever transition.*/
 d3.csv("data/regions.csv", function(data) {
   // grab dataset in variable, delcare other variables here, outside loops
   regionData = data;
-  var i;
-  var j;
   var dataRegion;
   var dataValue;
   var mapRegion;
@@ -82,12 +90,12 @@ d3.csv("data/regions.csv", function(data) {
       // console.log(json);
 
       // loop through csv to get region name and percent
-      for (i = 0; i < regionData.length; i++) {
+      for (var i = 0; i < regionData.length; i++) {
         dataRegion = regionData[i].region;
         dataValue = regionData[i][checkedStatus];
 
         // lookup that region in json, add percent values
-        for (j = 0; j < json.features.length; j++) {
+        for (var j = 0; j < json.features.length; j++) {
           mapRegion = json.features[j].properties.NAME_1;
           if (dataRegion == mapRegion) {
             json.features[j].properties.percent = dataValue;
