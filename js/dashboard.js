@@ -7,10 +7,15 @@ var h = 600;
 // various GeoJSON and TopoJSON files from https://github.com/thadk/GeoTZ
 
 // ####################################################################
+//    GLOBAL VARIABLES
+// ####################################################################
+var checkedStatus;
+
+
+// ####################################################################
 //    FUNCTIONS
 // ####################################################################
-// default at page load
-var checkedStatus = "non-functional";
+
 // get the text (i.e., status_group value) of currently selected radio button
 function getStatus() {
   var form, options;
@@ -34,10 +39,12 @@ function setMapAttr(selection) {
   checkedStatus = getStatus();
 
   // set attributes on path elements based on checkedStatus
-  selection.attr({
-    id: function(d) { return d.properties.NAME_1; },
+  selection
+    .attr("id", function(d) {
+      return d.properties.NAME_1;
+    })
     // opacity is percent of total wells that meet the checkedStatus value
-    opacity: function(d) {
+    .style("fill-opacity", function(d) {
       opPct = +d.properties[checkedStatus];
       // validate property exists, because not all regions are in csv
       if (opPct) {
@@ -46,19 +53,17 @@ function setMapAttr(selection) {
         // transparent if missing, also set stroke-width to 0 so won't appear
         return 0;
       }
-    },
-    class: function(d) {
+    })
+    .attr("class", function(d) {
       // if the property for the checkedStatus, set class as that checkedStatus, which defines the fill color (in CSS). Also include "region" for gen CSS rules. If no checkedStatus property, add "missing" class.
       if (+d.properties[checkedStatus]) {
         return("region " + checkedStatus);
       } else {
         // otherwise assign to class "missing"
-        console.log("missing: " + d.properties.NAME_1);
         return("region missing");
       }
-    }
-  })
-}
+    });
+  }
 
 // generate svg object at botto mof "#map-viz" div class ".viz"
 var geoSVG = d3.select("#map-viz .viz")
@@ -105,7 +110,6 @@ d3.csv("data/regions.csv", function(data) {
           dataRegion = csvRow.region;
           // ... when we find a match ...
           if (dataRegion == mapRegion) {
-            console.log("match: " + dataRegion);
             // /... add each column:value pair to json properties
             Object.keys(csvRow).forEach(function(key) {
               prop = key;
