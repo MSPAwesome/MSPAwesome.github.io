@@ -1,17 +1,20 @@
-// global svg width and height, in pixels
-// primarily for map; maybe make different vars for each viz?
-var w = 1000;
-var h = 600;
 
-// Let's make some maps!
+// ====================================================================
+//    MAP
 // various GeoJSON and TopoJSON files from https://github.com/thadk/GeoTZ
+// ====================================================================
 
 // ####################################################################
 //    GLOBAL VARIABLES
 // ####################################################################
+// width and height of mapSVG
+var w = 1000, h = 600;
+// current checked radio button for Status
 var checkedStatus;
 // variables to hold main data sets; may use outside map function
 var regionData, jsonData;
+// for zoom
+var active = d3.select(null);
 
 // ####################################################################
 //    FUNCTIONS
@@ -31,8 +34,6 @@ function getStatus() {
     }
   }
 }
-
-// class="region" for general CSS, plus class for status
 
 function setMapAttr(selection) {
   var opPct;
@@ -69,13 +70,41 @@ function setMapAttr(selection) {
         return("region missing");
       }
     });
-  }
+}
 
-// generate svg object at botto mof "#map-viz" div class ".viz"
-var geoSVG = d3.select("#map-viz .viz")
-  .append("svg")
-  .attr("width", w)
-  .attr("height", h);
+// zoom on region when clicked..
+function clicked(d) {
+  if (active.node() === this) return reset();
+  active.classed("active", false);
+  active = d3.select(this).classed("active", true);
+
+  var bounds = path.bounds(d),
+      dx = bounds[1][0] - bounds[0][0],
+      dy = bounds[1][1] - bounds[0][1],
+      x = (bounds[0][0] + bounds[1][0]) / 2,
+      y = (bounds[0][1] + bounds[1][1]) / 2,
+      scale = .9 / Math.max(dx / w, dy / h),
+      translate = [w / 2 - scale * x, h / 2 - scale * y];
+
+  g.transition()
+      .duration(750)
+      .style("stroke-width", 1.5 / scale + "px")
+      .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+}
+
+function reset() {
+  active.classed("active", false);
+  active = d3.select(null);
+
+  g.transition()
+      .duration(750)
+      .style("stroke-width", "1.5px")
+      .attr("transform", "");
+}
+
+// ####################################################################
+//    CREATE DEFAULTS FOR MAP
+// ####################################################################
 
 // i.e. map projection. Mostly just trial and error here.
 var projection = d3.geo.mercator()
@@ -85,6 +114,16 @@ var projection = d3.geo.mercator()
 
 // create path variable with our projection
 var path = d3.geo.path().projection(projection);
+
+// generate svg object at botto mof "#map-viz" div class ".viz"
+var geoSVG = d3.select("#map-viz .viz")
+  .append("svg")
+  .attr("width", w)
+  .attr("height", h);
+
+// something about around the svg itself
+var g = geoSVG.append("g")
+    .style("stroke-width", "1px");
 
 /* load csv data here, then merge with map data. This way we only have to
 iterate through the csv once to match region names, not at ever transition.*/
@@ -132,11 +171,12 @@ d3.csv("data/regions.csv", function(data) {
       }
 
       // bind GeoJSON features (incl percent) to new path elements
-      geoSVG.selectAll("path")
+      g.selectAll("path")
         .data(jsonData.features)
         .enter().append("path")
         .attr("d", path) // <-- our projection from above
-        .call(setMapAttr);
+        .call(setMapAttr)
+        .on("click", clicked);
 
 
       // // load data for water points
@@ -169,7 +209,7 @@ d3.csv("data/regions.csv", function(data) {
 
 d3.selectAll("input")
   .on("click", function() {
-    geoSVG.selectAll("path")
+    g.selectAll("path")
       .data(jsonData.features)
       .call(setMapAttr);
   });
