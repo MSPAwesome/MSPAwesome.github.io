@@ -113,16 +113,13 @@ needs to be color-coded for target values. */
 }
 
 .functional {
-  /*fill: rgb(145,191,219);   /* blue */
-  fill: #4575b4;
+  fill: rgb(145,191,219);   /* blue */
 }
 .functional-needs-repair {    /* yellow */
-  /*fill: rgb(255,255,191);*/
-  fill: #fee090;
+  fill: rgb(255,255,191);
 }
 .non-functional {     /* orange */
-  /*fill: rgb(252,141,89);*/
-  fill: #d73027;
+  fill: rgb(252,141,89);
 }
 .missing {
   fill: #999999;  /* to match background-color */
