@@ -4,6 +4,7 @@ body {
   font-size: 100%;
   line-height: 1.4em;
   background-color: #999999;
+  /*background-color: black;*/
   text-decoration-color: white;
 }
 
@@ -25,7 +26,7 @@ CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
   text-decoration: none;}
 
 /* rest of page */
-h1, h2, h3 {
+h1, h2, h3, legend {
   font-family: 'Montserrat', sans-serif;
   font-weight: normal;
   text-align: center;
@@ -47,8 +48,9 @@ h3 {
   font-size: 112.5%;
 }
 
-p, figcaption {
+p, figcaption, fieldset {
   text-align: center;
+  margin: auto;
 }
 
 figcaption {
@@ -59,7 +61,21 @@ figcaption {
 
 p {
   margin-bottom: 50px;
-} 
+  max-width: 50%;
+}
+
+fieldset {
+  text-align: left;
+  max-width: 250px;
+  padding: 20px 30px;
+  border: 2px solid #444;
+  border-radius: 10px;
+}
+
+legend {
+  padding: 2px;
+  text-align: left;
+}
 
 .content {
   text-align: left;
@@ -70,21 +86,53 @@ p {
 class is more specific than element name, so
 #id will override .class */
 
+/*******************************************************/
+/****     MAP     **************************************/
+/******************************************************/
+path.region:not(.missing) {
+  pointer-events: all;
+}
+
+/* targets all "region" class paths (in map) except those that are also class "missing" and changes settings on hover (because we want missing regions not to change)*/
+path.region:not(.missing):hover {
+  stroke-width: 3px;
+}
+
+.waterpoint {
+  opacity: 0.3;
+  stroke-width: 1px;
+  stroke-opacity: 1;
+}
+
 /* try to use these classes for all dynamically created content that
-needs to be color-coded for target values.
-NOTE: changed from red-yellow-green to red-orange-blue to make it
-colorblind compatible */
+needs to be color-coded for target values. */
+
+/* set country-level path fill to white, behind region-level opacity */
+#Tanzania {
+  fill: white;
+}
+
 .functional {
   fill: rgb(145,191,219);   /* blue */
+  stroke: rgb(145,191,219);
 }
 .functional-needs-repair {    /* yellow */
   fill: rgb(255,255,191);
+  stroke: rgb(255,255,191);
 }
 .non-functional {     /* orange */
   fill: rgb(252,141,89);
+  stroke: rgb(252,141,89);
+}
+.missing {
+  fill: #999999;  /* to match background-color */
 }
 
-#map-viz .non-functional {     /* orange */
+
+
+
+/*
+#map-viz .non-functional {
   fill: rgb(252,141,89);
   animation: blink .75s linear infinite;
 }
@@ -94,22 +142,8 @@ colorblind compatible */
     50.01% { opacity: 0; }
     100% { opacity: 0; }
 }
-/*******************************************************/
-/****     MAP     **************************************/
-/******************************************************/
-path.region { /* path is for map; could be "#map path.region" if needed */
-  stroke: black;
-  fill: #444;
-  pointer-events:all;
-}
-/*
-path.region:hover {
-  fill: #189d07;
-}
-*/
-.waterpoint {
-  opacity: 0.3;
-}
+ */
+
 /*******************************************************/
 /****     BAR CHART     **************************************/
 /******************************************************/
@@ -143,7 +177,9 @@ height: 20%;
 /*******   SCATTER PLOT *********************************************/
 /********************************************************************/
 
-.axis path, .axis line { 
+
+.axis path, .axis line {
+
      fill: none;
      stroke: black;
      shape-rendering: crispEdges;

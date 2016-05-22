@@ -1,56 +1,158 @@
-// global svg width and height, in pixels
-// primarily for map; maybe make different vars for each viz?
-var w = 600;
-var h = 600;
 
-// Let's make some maps!
-
-// generate svg object in main section
-var geoSVG = d3.select("#map-viz .viz")
-  .append("svg")
-  .attr("width", w)
-  .attr("height", h);
-
-// path generator to map JSON file to SVG path codes
-var projection = d3.geo.mercator()
-  .center([34.8888, -6.3690])
-  .translate([w / 2, h / 2])
-  .scale(3000);
-
-// load map and do stuff with it
+// ====================================================================
+//    MAP
 // various GeoJSON and TopoJSON files from https://github.com/thadk/GeoTZ
+// ====================================================================
 
-/**********************************************************
-  This is for GeoJSON. Larger file, but has regions and names. */
+// ####################################################################
+//    GLOBAL VARIABLES
+// ####################################################################
+// width and height of mapSVG
+var w = 1000, h = 600;
+// current checked radio button for Status
+var checkedStatus;
+// variables to hold main data sets; may use outside map function
+var regionData, jsonData;
+// for zoom
+var active = d3.select(null);
+// var zoomed = false;
 
-d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
-  if(error) {
-    console.log(error);
-  } else {
-    // log json to get a look at its structure since it crashes my text editor
-    console.log(json);
+// ####################################################################
+//    FUNCTIONS
+// ####################################################################
 
-    var path = d3.geo.path()
-      .projection(projection);
-    // bind GeoJSON features to new path elements
-    geoSVG.selectAll("path")
-      .data(json.features)
-      .enter().append("path")
-      .attr("d", path)
-      .attr({
-        class: "region"
-      });
+// get the text (i.e., status_group value) of currently selected radio button
+function getStatus() {
+  var form, options;
+  // console.log("checking status");
+  form = document.getElementById('currentStatus');
+  options = form.elements.status_group;
+  for (var i = 0; i < options.length; i++) {
+    if (options[i].checked) {
+      // console.log(options[i].value);
+      return options[i].value;
+      break;
+    }
+  }
+}
 
+function setMapAttr(selection) {
+  var opPct;
+  // get which radio button is checked
+  checkedStatus = getStatus();
+
+  // set attributes on path elements based on checkedStatus
+  selection
+    // regions store name as NAME_1 property but country is ENGLI_NAME
+    .attr("id", function(d) {
+      if (d.properties.NAME_1) {
+        return d.properties.NAME_1;
+      } else {
+        return d.properties.NAME_ENGLI;
+      }
+    })
+    // opacity is percent of total wells that meet the checkedStatus value
+    .style("fill-opacity", function(d) {
+      opPct = +d.properties[checkedStatus];
+      // validate property exists, because not all regions are in csv
+      if (opPct) {
+        return(opPct);
+      } else {
+        // country path or region missing from CSV.
+        return 1;
+      }
+    })
+    .attr("class", function(d) {
+      // if the property for the checkedStatus exists, set class as that checkedStatus, which defines the fill color (in CSS). Also include "region" for gen CSS rules. If no checkedStatus property, add "missing" class.
+      if (+d.properties[checkedStatus]) {
+        return("region " + checkedStatus);
+      } else {
+        // otherwise assign to class "missing"; includes country-path
+        return("region missing");
+      }
+    });
+}
+
+// zoom on region when clicked..
+function clicked(d) {
+  // if the region clicked is already "active" reset to original view
+  if (active.node() === this) return reset();
+
+  // remove the "active" class from the formerly "active" node
+  active.classed("active", false);
+
+  // add "active" class to current selection
+  active = d3.select(this)
+    .classed("active", true);
+
+  g.selectAll("path")
+    // trying to keep "Tanzania" path white with others fully transparent, but it's not really working. Perhaps need to learn more about keys.
+    .data(jsonData)
+    .transition()
+    .duration(750)
+    // .style("fill-opacity", function(d) {
+    //   if (d.id == "Tanzania") {
+    //     return 1;
+    //   } else {
+    //     return 0;
+    //   }
+    // });
+    .style("fill-opacity", 0);
+
+    // // call function to add data points to region
+    // // not quite working yet
+    // if (zoomed = true) {
+    //   addPoints(active.id);
+    // }
+
+  // set new view area
+  var bounds = path.bounds(d),
+      dx = bounds[1][0] - bounds[0][0],
+      dy = bounds[1][1] - bounds[0][1],
+      x = (bounds[0][0] + bounds[1][0]) / 2,
+      y = (bounds[0][1] + bounds[1][1]) / 2,
+      scale = .9 / Math.max(dx / w, dy / h),
+      translate = [w / 2 - scale * x, h / 2 - scale * y];
+
+  // transition to new view
+  g.transition()
+      .duration(750)
+      .style("stroke-width", 1.5 / scale + "px")
+      .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+}
+
+// zoom out when clicked again
+function reset() {
+  active.classed("active", false);
+  active = d3.select(null);
+  // zoomed = false;
+  // g.selectAll("circle").remove();
+  g.selectAll("path")
+    // .transition()
+    // .duration(750)
+    .call(setMapAttr);
+  g.transition()
+      .duration(750)
+      .style("stroke-width", "1.5px")
+      .attr("transform", "");
+}
+
+function addPoints(regionName) {
+  // get which radio button is checked
+  checkedStatus = getStatus();
+
+  var fileName = "data/" + regionName + ".csv";
+  if (fileName) {
 
     // load data for water points
-    // Using same projection as above should be OK as async?
-    d3.csv("data/sample-data-filters.csv", function(error, data) {
+    d3.csv(fileName, function(error, oneRegion) {
       if(error) {   // if error is not NULL, i.e. data file loaded wrong
         console.log(error);
       } else {
-        geoSVG.selectAll("circle")
-          .data(data)
-          .enter()
+        // ??? Can I filter by status_group here?
+        var waterpoints = g.selectAll("circle").data(oneRegion);
+        // add points for any new elements
+        waterpoints.enter()
           .append("circle")
           .attr("cx", function(d) {
             return projection([d.longitude, d.latitude])[0];
@@ -58,15 +160,126 @@ d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
           .attr("cy", function(d) {
             return projection([d.longitude, d.latitude])[1];
           })
-          .attr("r", 3)
-          .attr("class", function(d) {
-            return d["status_group"]+" waterpoint";
-          });
+          .classed("waterpoint", true)
+          .classed(checkedStatus, true)
+          .attr("r", 2);
+
+        // update the circles that were already here
+        waterpoints.transition()
+          .duration(500)
+          .attr("cx", function(d) {
+            return projection([d.longitude, d.latitude])[0];
+          })
+          .attr("cy", function(d) {
+            return projection([d.longitude, d.latitude])[1];
+          })
+          .attr("class", "waterpoint " + checkedStatus);
+
+        // remove extra circles
+        waterpoints.exit()
+          .transition()
+          .duration(500)
+          .attr("opacity", 0)
+          .remove;
       };
-    });
+    })
+  } else {
+    console.log("no CSV for " + regionName);
   }
+}
+
+// change displayed data based on
+function statusClick() {
+  // if (zoomed = false) {
+    g.selectAll("path")
+      .data(jsonData.features)
+      .call(setMapAttr);
+  // } else {
+  //   // addPoints(this.value);
+  // }
+}
+
+// ####################################################################
+//    CREATE DEFAULTS FOR MAP
+// ####################################################################
+
+// i.e. map projection. Mostly just trial and error here.
+var projection = d3.geo.mercator()
+  .center([34.8888, -6.3690])
+  .translate([w / 2, h / 2])
+  .scale(3000);
+
+// create path variable with our projection
+var path = d3.geo.path().projection(projection);
+
+// generate svg object at botto mof "#map-viz" div class ".viz"
+var geoSVG = d3.select("#map-viz .viz")
+  .append("svg")
+  .attr("width", w)
+  .attr("height", h);
+
+// something about around the svg itself
+var g = geoSVG.append("g")
+    .style("stroke-width", "1px");
+
+/* load csv data here, then merge with map data. This way we only have to
+iterate through the csv once to match region names, not at ever transition.*/
+d3.csv("data/regions.csv", function(data) {
+  // grab dataset in variable, delcare other variables here, outside loops
+  regionData = data;
+  var dataRegion;
+  var mapRegion;
+
+  // This code is for GeoJSON--larger file than TopoJSON, but has region names
+  d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
+    if(error) {
+      console.log(error);
+    } else {
+      // log json -- easier to read than in text editor
+      console.log(json);
+      // store json in global scope var to access it later for updates
+      jsonData = json;
+      var jsonFeature;
+
+      var csvRow;
+      // loop through json features (i.e., regions) ...
+      for (var i = 0; i < jsonData.features.length; i++) {
+        // ...  to get region name ...
+        jsonFeature = jsonData.features[i].properties
+        // (note, country object does not have NAME_1 property...
+        mapRegion = jsonFeature.NAME_1;
+
+        // ... so verify we have a value here first)
+        if (mapRegion) {
+          // ... then loop through csv to find matching row ...
+          for (var j = 0; j < regionData.length; j++) {
+            csvRow = regionData[j];
+            dataRegion = csvRow.region;
+            // ... when we find a match ...
+            if (dataRegion == mapRegion) {
+              // ... add each column:value pair to json properties (for everything except country path, of course)
+              Object.keys(csvRow).forEach(function(key) {
+                jsonFeature[key] = csvRow[key];
+              })
+              break;
+            }
+          }
+        }
+      }
+
+      // bind GeoJSON features (incl percent) to new path elements
+      g.selectAll("path")
+        .data(jsonData.features)
+        .enter().append("path")
+        .attr("d", path) // <-- our projection from above
+        .call(setMapAttr)
+        .on("click", clicked);
+    }
+  })
 });
 
+d3.selectAll("input")
+  .on("click", statusClick);
 /* ********************************************************
   This is for TopoJSON. Smaller file, but no district names.
   Also only starts at District level, not region level.
@@ -159,90 +372,84 @@ d3.csv("data/counts.csv", function(error, data) {
 });
 
 
-//*******************************************
-// This is a scatter plot that shows water point count by construction year and functional status
-//***************************************************
-
-var dataset1; //data set for scatter plot
-
-
-d3.csv("data/Status_Const-Year.csv", function(error, data) {
-	if(error) {   // if error is not NULL, i.e. data file loaded wrong
-    console.log(error);
-	} else { // if file loaded correctly, go on with it
-	
-	w = 800
-	h = 600
-	
-	
-	dataset1 = data;
-	
-	var svg1 = d3.select("#status-year .viz")
-      .append("svg")
-      .attr("width", w)
-      .attr("height", h)
-      .attr("class", "status-year");
-	  
-	var padding = 50;
-	
-	var formatwhole = d3.format("d")
-	
-	var xscale = d3.scale.linear()	//creating scale function to scale x axis for scatterplot
-		.domain([1955,
-			d3.max(dataset1,function(d) {
-				return d["Const-Year"];})])
-		.range([padding,w - padding]);	
-
-	var yscale = d3.scale.linear()	//creating scale function to scale y axis for scatterplot
-		.domain([0, 2050]) //max function not seeming to work - need to spend time working later, also not sure why there are 5 dots at top rather than in their proper place
-			//d3.max(dataset1,function(d) {
-				//return d["ID_Count"];})])
-					
-		.range([ h - padding , 0]);	
-
-	var xAxis = d3.svg.axis()
-		.scale(xscale)
-		.orient("bottom")
-		.ticks(10)
-		.tickFormat(formatwhole);
-		
-	var yAxis = d3.svg.axis()
-		.scale(yscale)
-		.orient("left")
-		.ticks(10);
-	
-	
-	// create svg elements and bind data to them
-    svg1.selectAll("circle")
-       //ID_Count is the count of water points by functional status and construction year
-      .data(dataset1)
-      .enter()
-      .append("circle")  
-	  .attr("cx", function(d) {
-			return xscale(d["Const-Year"]);
-	  })
-	  .attr("cy", function(d) {
-			return yscale(d["ID_Count"]);
-	  })
-	  .attr("r",5)
-	  .attr("class", function(d) {
-        return d["Var1"];
-      });
-	  
-	svg1.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate(0," + (h- padding) + ")")
-		.call(xAxis);
-		
-	svg1.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate(" + padding + ",0)")
-		.call(yAxis);	
-	}
-});
-
-//*******************************************
-// This is a stacked bar that shows functional status by region
-//**************************************************
-
-
+// //*******************************************
+// // This is a scatter plot that shows water point count by construction year and functional status
+// //***************************************************
+//
+// var dataset1; //data set for scatter plot
+//
+//
+// d3.csv("data/Status_Const-Year.csv", function(error, data) {
+// 	if(error) {   // if error is not NULL, i.e. data file loaded wrong
+//     console.log(error);
+// 	} else { // if file loaded correctly, go on with it
+//
+// 	w = 800
+// 	h = 600
+//
+//
+// 	dataset1 = data;
+//
+// 	var svg1 = d3.select("#status-year .viz")
+//       .append("svg")
+//       .attr("width", w)
+//       .attr("height", h)
+//       .attr("class", "status-year");
+//
+// 	var padding = 50;
+//
+// 	var formatwhole = d3.format("d")
+//
+// 	var xscale = d3.scale.linear()	//creating scale function to scale x axis for scatterplot
+// 		.domain([1955,
+// 			d3.max(dataset1,function(d) {
+// 				return d["Const-Year"];})])
+// 		.range([padding,w - padding]);
+//
+// 	var yscale = d3.scale.linear()	//creating scale function to scale y axis for scatterplot
+// 		.domain([0, 2050]) //max function not seeming to work - need to spend time working later, also not sure why there are 5 dots at top rather than in their proper place
+// 			//d3.max(dataset1,function(d) {
+// 				//return d["ID_Count"];})])
+//
+// 		.range([ h - padding , 0]);
+//
+// 	var xAxis = d3.svg.axis()
+// 		.scale(xscale)
+// 		.orient("bottom")
+// 		.ticks(10)
+// 		.tickFormat(formatwhole);
+//
+// 	var yAxis = d3.svg.axis()
+// 		.scale(yscale)
+// 		.orient("left")
+// 		.ticks(10);
+//
+//
+// 	// create svg elements and bind data to them
+//     svg1.selectAll("circle")
+//        //ID_Count is the count of water points by functional status and construction year
+//       .data(dataset1)
+//       .enter()
+//       .append("circle")
+// 	  .attr("cx", function(d) {
+// 			return xscale(d["Const-Year"]);
+// 	  })
+// 	  .attr("cy", function(d) {
+// 			return yscale(d["ID_Count"]);
+// 	  })
+// 	  .attr("r",5)
+// 	  .attr("class", function(d) {
+//         return d["Var1"];
+//       });
+//
+// 	svg1.append("g")
+// 		.attr("class", "axis")
+// 		.attr("transform", "translate(0," + (h- padding) + ")")
+// 		.call(xAxis);
+//
+// 	svg1.append("g")
+// 		.attr("class", "axis")
+// 		.attr("transform", "translate(" + padding + ",0)")
+// 		.call(yAxis);
+// 	}
+// });
