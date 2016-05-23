@@ -10,7 +10,7 @@
 // width and height of mapSVG
 var w = 1000, h = 600;
 // current checked radio button for Status
-var checkedStatus;
+var checkedStatus = getStatus();
 // variables to hold main data sets; may use outside map function
 var regionData, jsonData;
 // for zoom
@@ -43,6 +43,10 @@ function setMapAttr(selection) {
   // get which radio button is checked
   checkedStatus = getStatus();
 
+
+  // now add domain to scale. need to update after every getStatus()
+  opacityScale.domain(opacityDomain[checkedStatus]);
+
   // set attributes on path elements based on checkedStatus
   selection
     // regions store name as NAME_1 property but country is ENGLI_NAME
@@ -53,12 +57,12 @@ function setMapAttr(selection) {
         return d.properties.NAME_ENGLI;
       }
     })
-    // opacity is percent of total wells that meet the checkedStatus value
+    // opacity is quartile of count out of all counts of that class
     .style("fill-opacity", function(d) {
       opPct = +d.properties[checkedStatus];
       // validate property exists, because not all regions are in csv
       if (opPct) {
-        return(opPct);
+        return opacityScale(opPct);
       } else {
         // country path or region missing from CSV.
         return 1;
@@ -205,10 +209,9 @@ function statusClick() {
 //    CREATE DEFAULTS FOR MAP
 // ####################################################################
 
-// scale for region fill opacity (based on quartiles--4 bins w/ same amount of values in each)
+// scale for region fill opacity (based on quartiles--4 bins w/ same amount of values in each). will add domain later, when we get current class
 var opacityScale = d3.scale.quantile()
-  .domain(opacityDomain[checkedStatus])
-  .range(opacityRange)
+  .range(opacityRange);
 
 // i.e. map projection. Mostly just trial and error here.
 var projection = d3.geo.mercator()
@@ -241,15 +244,15 @@ d3.csv("data/regions.csv", function(data) {
 
     // loop thru each key in region object
     Object.keys(region).forEach(function (key){
-      if (key !== "region") {
-        if (!opacityDomain[key]) {
+      if (key !== "region") {   // don't need "region" property
+        if (!opacityDomain[key]) {   // create empty array if doesn't exist yet
           opacityDomain[key] = [];
         }
-        opacityDomain[key].push(region[key]);
+        opacityDomain[key].push(region[key]);   // add value to array
       }
     })
   })
-  console.log(opacityDomain);
+
   // This code is for GeoJSON--larger file than TopoJSON, but has region names
   var dataRegion;
   var mapRegion;
@@ -258,7 +261,7 @@ d3.csv("data/regions.csv", function(data) {
       console.log(error);
     } else {
       // log json -- easier to read than in text editor
-      console.log(json);
+      // console.log(json);
       // store json in global scope var to access it later for updates
       jsonData = json;
       var jsonFeature;
