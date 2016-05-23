@@ -8,7 +8,7 @@
 //    SOME GLOBAL VARIABLES
 // ####################################################################
 // width and height of mapSVG
-var w = 1000, h = 600;
+var w = 700, h = 600;
 // current checked radio button for Status
 var checkedStatus = getStatus();
 // variables to hold main data sets; may use outside map function
