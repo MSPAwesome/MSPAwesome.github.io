@@ -334,6 +334,11 @@ function reset() {
       .attr("transform", "");
 }
 
+// filter to only include current checked status dots
+function dotFilter(dot) {
+  return dot.status_group == checkedStatus;
+}
+
 function addPoints(regionNode) {
   // get which radio button is checked
   checkedStatus = getStatus();
@@ -346,8 +351,11 @@ function addPoints(regionNode) {
       if(error) {   // if error is not NULL, i.e. data file loaded wrong
         console.log(error);
       } else {
-        // ??? Can I filter by status_group here?
-        var waterpoints = g.selectAll("circle").data(oneRegion);
+        // Filter by checkedStatus
+        var statusData = [];
+        statusData = oneRegion.filter(dotFilter);
+
+        var waterpoints = g.selectAll("circle").data(statusData);
         // add points for any new elements
         waterpoints.enter()
           .append("circle")
@@ -358,25 +366,26 @@ function addPoints(regionNode) {
             return projection([d.longitude, d.latitude])[1];
           })
           .attr("class", "waterpoint " + checkedStatus)
-          .attr("r", 2);
+          .attr("r", 0);
 
         // remove extra circles
         waterpoints.exit()
           .transition()
-          .duration(500)
-          .attr("opacity", 0)
+          .duration(750)
+          .attr("fill-opacity", 0)
           .remove();
 
         // update the circles that are left
         waterpoints.transition()
-          .duration(500)
+          .duration(750)
           .attr("cx", function(d) {
             return projection([d.longitude, d.latitude])[0];
           })
           .attr("cy", function(d) {
             return projection([d.longitude, d.latitude])[1];
           })
-          .attr("class", "waterpoint " + checkedStatus);
+          .attr("class", "waterpoint " + checkedStatus)
+          .attr("r", 2);
 
       };
     })

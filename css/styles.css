@@ -125,6 +125,9 @@ needs to be color-coded for target values. */
   fill: #999999;  /* to match background-color */
 }
 
+.africa {
+  fill: green;
+}
 
 
 
