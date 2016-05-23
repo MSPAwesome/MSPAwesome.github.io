@@ -16,6 +16,8 @@ var regionData, jsonData;
 // for zoom
 var active = d3.select(null);
 // var zoomed = false;
+// for opacity scale (for map); range is for quartiles
+var opacityDomain = {}, opacityRange = [0.25, 0.5, 0.75, 1];
 
 // ####################################################################
 //    FUNCTIONS
@@ -203,6 +205,11 @@ function statusClick() {
 //    CREATE DEFAULTS FOR MAP
 // ####################################################################
 
+// scale for region fill opacity (based on quartiles--4 bins w/ same amount of values in each)
+var opacityScale = d3.scale.quantile()
+  .domain(opacityDomain[checkedStatus])
+  .range(opacityRange)
+
 // i.e. map projection. Mostly just trial and error here.
 var projection = d3.geo.mercator()
   .center([34.8888, -6.3690])
@@ -223,14 +230,29 @@ var g = geoSVG.append("g")
     .style("stroke-width", "1px");
 
 /* load csv data here, then merge with map data. This way we only have to
-iterate through the csv once to match region names, not at ever transition.*/
+iterate through the csv once to match region names, not at every transition.*/
 d3.csv("data/regions.csv", function(data) {
   // grab dataset in variable, delcare other variables here, outside loops
   regionData = data;
+
+  // create object with arrays of all values for each class, for use in scale
+  // loop through each region object in data array
+  regionData.forEach(function (region){
+
+    // loop thru each key in region object
+    Object.keys(region).forEach(function (key){
+      if (key !== "region") {
+        if (!opacityDomain[key]) {
+          opacityDomain[key] = [];
+        }
+        opacityDomain[key].push(region[key]);
+      }
+    })
+  })
+  console.log(opacityDomain);
+  // This code is for GeoJSON--larger file than TopoJSON, but has region names
   var dataRegion;
   var mapRegion;
-
-  // This code is for GeoJSON--larger file than TopoJSON, but has region names
   d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
     if(error) {
       console.log(error);
@@ -240,8 +262,8 @@ d3.csv("data/regions.csv", function(data) {
       // store json in global scope var to access it later for updates
       jsonData = json;
       var jsonFeature;
-
       var csvRow;
+
       // loop through json features (i.e., regions) ...
       for (var i = 0; i < jsonData.features.length; i++) {
         // ...  to get region name ...
