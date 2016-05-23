@@ -99,7 +99,7 @@ path.region:not(.missing):hover {
 }
 
 .waterpoint {
-  opacity: 0.3;
+  opacity: 0.1;
   stroke-width: 1px;
   stroke-opacity: 1;
 }

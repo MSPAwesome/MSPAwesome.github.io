@@ -40,9 +40,10 @@ var path = d3.geo.path().projection(projection);
 var geoSVG = d3.select("#map-viz .viz")
   .append("svg")
   .attr("width", w)
-  .attr("height", h);
+  .attr("height", h)
+  .attr("border", 1);
 
-// something about around the svg itself, for zooming
+// something about the svg itself, for zooming
 var g = geoSVG.append("g")
     .style("stroke-width", "1px");
 
@@ -106,6 +107,19 @@ d3.csv("data/regions.csv", function(data) {
         }
       }
 
+      // // frame around svg box
+      // var frame = g.append("rect")
+      //     .attr("width", w)
+      //     .attr("height", h)
+      //     .attr("x", 0)
+      //     .attr("y", 0)
+      //     // .transition()
+      //     // .duration(1000)
+      //     .style("stroke", "black")
+      //     .style("stroke-width", 1)
+      //     .style("fill", "none")
+      //     .style("padding", 20);
+
       // bind GeoJSON features (incl count) to new path elements
       g.selectAll("path")
         .data(jsonData.features)
@@ -119,6 +133,8 @@ d3.csv("data/regions.csv", function(data) {
             return d.properties.NAME_ENGLI;
           }
         })
+        .style("fill-opacity", 0)
+        .style("opacity", 0)
         .call(setMapAttr)
         .on("click", clicked);
     }
@@ -248,6 +264,9 @@ function setMapAttr(selection) {
   // set attributes on path elements based on checkedStatus
   selection
     // opacity is quartile of count out of all counts of that class
+    .transition()
+    .duration(750)
+    .style("opacity", 1)
     .style("fill-opacity", function(d) {
       // value of current checkedStatus count
       pointCount = +d.properties[checkedStatus];
@@ -285,9 +304,9 @@ function clicked(d) {
 
   g.selectAll("path")
     // trying to keep "Tanzania" path white with others fully transparent, but it's not really working. Perhaps need to learn more about keys.
-    // .data(jsonData)
     .transition()
-    .duration(750)
+    // .delay(750)
+    .duration(1000)
     .style("fill-opacity", function(d) {
       if (d.id == "Tanzania") {
         return 1;
@@ -313,7 +332,7 @@ function clicked(d) {
 
   // transition to new view
   g.transition()
-      .duration(750)
+      .duration(2000)
       .style("stroke-width", 1.5 / scale + "px")
       .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
 }
@@ -323,13 +342,17 @@ function reset() {
   active.classed("active", false);
   active = d3.select(null);
   zoomed = false;
-  g.selectAll("circle").remove();
-  g.selectAll("path")
+  g.selectAll("circle")
     .transition()
-    .duration(750)
+    .duration(1000)
+    .attr("r", 0)
+    .remove();
+  g.selectAll("path")
+    // no transition here, it's already in the function
     .call(setMapAttr);
   g.transition()
-      .duration(750)
+      // .delay(750)
+      .duration(1000)
       .style("stroke-width", "1.5px")
       .attr("transform", "");
 }
@@ -355,37 +378,40 @@ function addPoints(regionNode) {
         var statusData = [];
         statusData = oneRegion.filter(dotFilter);
 
+        // bind new data to circles
         var waterpoints = g.selectAll("circle").data(statusData);
+
         // add points for any new elements
         waterpoints.enter()
           .append("circle")
-          .attr("cx", function(d) {
-            return projection([d.longitude, d.latitude])[0];
-          })
-          .attr("cy", function(d) {
-            return projection([d.longitude, d.latitude])[1];
-          })
-          .attr("class", "waterpoint " + checkedStatus)
-          .attr("r", 0);
+          .attr("r", 0); // starting point for radius, will transition below
 
-        // remove extra circles
+        // remove leftover elements
         waterpoints.exit()
           .transition()
-          .duration(750)
-          .attr("fill-opacity", 0)
+          .duration(1000)
+          .attr("r", 0)
           .remove();
 
-        // update the circles that are left
+        // update the circles that remain (incuding new ones)
         waterpoints.transition()
-          .duration(750)
+          .duration(1000)
+          .attr("r", 0)
+          .transition()
+          .delay(1000)
+          .duration(250)
           .attr("cx", function(d) {
             return projection([d.longitude, d.latitude])[0];
           })
           .attr("cy", function(d) {
             return projection([d.longitude, d.latitude])[1];
           })
-          .attr("class", "waterpoint " + checkedStatus)
-          .attr("r", 2);
+          .transition()
+          .delay(1250)
+          .duration(2000)
+          .ease("elastic")
+          .attr("r", 3)
+          .attr("class", "waterpoint " + checkedStatus);
 
       };
     })
@@ -399,6 +425,9 @@ function statusClick() {
   if (zoomed == false) {
     g.selectAll("path")
       // .data(jsonData.features)
+      .transition()
+      .duration(500)
+      .style("fill-opacity", 0)
       .call(setMapAttr);
   } else {
     addPoints(active.node());
