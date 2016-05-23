@@ -3,7 +3,7 @@ body {
   font-family: Georgia, Times, serif;
   font-size: 100%;
   line-height: 1.4em;
-  background-color: #999999;
+  background-color: #686868;
   /*background-color: black;*/
   text-decoration-color: white;
 }
@@ -100,8 +100,6 @@ path.region:not(.missing):hover {
 
 .waterpoint {
   opacity: 0.1;
-  stroke-width: 1px;
-  stroke-opacity: 1;
 }
 
 /* try to use these classes for all dynamically created content that
@@ -209,6 +207,7 @@ use this for universal element styles
 svg {
   display: block;
   margin:auto;
+  background-color: #b6b6b6;
 }
 
 

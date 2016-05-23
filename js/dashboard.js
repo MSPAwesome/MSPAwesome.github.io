@@ -39,6 +39,7 @@ var path = d3.geo.path().projection(projection);
 // generate svg object at bottom of "#map-viz" div class ".viz"
 var geoSVG = d3.select("#map-viz .viz")
   .append("svg")
+  .attr("style", "outline: thin solid black;")
   .attr("width", w)
   .attr("height", h)
   .attr("border", 1);
