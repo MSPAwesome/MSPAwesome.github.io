@@ -5,7 +5,7 @@
 // ====================================================================
 
 // ####################################################################
-//    GLOBAL VARIABLES
+//    SOME GLOBAL VARIABLES
 // ####################################################################
 // width and height of mapSVG
 var w = 1000, h = 600;
@@ -15,195 +15,9 @@ var checkedStatus = getStatus();
 var regionData, jsonData;
 // for zoom
 var active = d3.select(null);
-// var zoomed = false;
+var zoomed = false;
 // for opacity scale (for map); range is for quartiles
 var opacityDomain = {}, opacityRange = [0.25, 0.5, 0.75, 1];
-
-// ####################################################################
-//    FUNCTIONS
-// ####################################################################
-
-// get the text (i.e., status_group value) of currently selected radio button
-function getStatus() {
-  var form, options;
-  // console.log("checking status");
-  form = document.getElementById('currentStatus');
-  options = form.elements.status_group;
-  for (var i = 0; i < options.length; i++) {
-    if (options[i].checked) {
-      // console.log(options[i].value);
-      return options[i].value;
-      break;
-    }
-  }
-}
-
-function setMapAttr(selection) {
-  var opPct;
-  // get which radio button is checked
-  checkedStatus = getStatus();
-
-
-  // now add domain to scale. need to update after every getStatus()
-  opacityScale.domain(opacityDomain[checkedStatus]);
-
-  // set attributes on path elements based on checkedStatus
-  selection
-    // regions store name as NAME_1 property but country is ENGLI_NAME
-    .attr("id", function(d) {
-      if (d.properties.NAME_1) {
-        return d.properties.NAME_1;
-      } else {
-        return d.properties.NAME_ENGLI;
-      }
-    })
-    // opacity is quartile of count out of all counts of that class
-    .style("fill-opacity", function(d) {
-      opPct = +d.properties[checkedStatus];
-      // validate property exists, because not all regions are in csv
-      if (opPct) {
-        return opacityScale(opPct);
-      } else {
-        // country path or region missing from CSV.
-        return 1;
-      }
-    })
-    .attr("class", function(d) {
-      // if the property for the checkedStatus exists, set class as that checkedStatus, which defines the fill color (in CSS). Also include "region" for gen CSS rules. If no checkedStatus property, add "missing" class.
-      if (+d.properties[checkedStatus]) {
-        return("region " + checkedStatus);
-      } else {
-        // otherwise assign to class "missing"; includes country-path
-        return("region missing");
-      }
-    });
-}
-
-// zoom on region when clicked..
-function clicked(d) {
-  // if the region clicked is already "active" reset to original view
-  if (active.node() === this) return reset();
-
-  // remove the "active" class from the formerly "active" node
-  active.classed("active", false);
-
-  // add "active" class to current selection
-  active = d3.select(this)
-    .classed("active", true);
-
-  g.selectAll("path")
-    // trying to keep "Tanzania" path white with others fully transparent, but it's not really working. Perhaps need to learn more about keys.
-    .data(jsonData)
-    .transition()
-    .duration(750)
-    // .style("fill-opacity", function(d) {
-    //   if (d.id == "Tanzania") {
-    //     return 1;
-    //   } else {
-    //     return 0;
-    //   }
-    // });
-    .style("fill-opacity", 0);
-
-    // // call function to add data points to region
-    // // not quite working yet
-    // if (zoomed = true) {
-    //   addPoints(active.id);
-    // }
-
-  // set new view area
-  var bounds = path.bounds(d),
-      dx = bounds[1][0] - bounds[0][0],
-      dy = bounds[1][1] - bounds[0][1],
-      x = (bounds[0][0] + bounds[1][0]) / 2,
-      y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = .9 / Math.max(dx / w, dy / h),
-      translate = [w / 2 - scale * x, h / 2 - scale * y];
-
-  // transition to new view
-  g.transition()
-      .duration(750)
-      .style("stroke-width", 1.5 / scale + "px")
-      .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
-}
-
-// zoom out when clicked again
-function reset() {
-  active.classed("active", false);
-  active = d3.select(null);
-  // zoomed = false;
-  // g.selectAll("circle").remove();
-  g.selectAll("path")
-    // .transition()
-    // .duration(750)
-    .call(setMapAttr);
-  g.transition()
-      .duration(750)
-      .style("stroke-width", "1.5px")
-      .attr("transform", "");
-}
-
-function addPoints(regionName) {
-  // get which radio button is checked
-  checkedStatus = getStatus();
-
-  var fileName = "data/" + regionName + ".csv";
-  if (fileName) {
-
-    // load data for water points
-    d3.csv(fileName, function(error, oneRegion) {
-      if(error) {   // if error is not NULL, i.e. data file loaded wrong
-        console.log(error);
-      } else {
-        // ??? Can I filter by status_group here?
-        var waterpoints = g.selectAll("circle").data(oneRegion);
-        // add points for any new elements
-        waterpoints.enter()
-          .append("circle")
-          .attr("cx", function(d) {
-            return projection([d.longitude, d.latitude])[0];
-          })
-          .attr("cy", function(d) {
-            return projection([d.longitude, d.latitude])[1];
-          })
-          .classed("waterpoint", true)
-          .classed(checkedStatus, true)
-          .attr("r", 2);
-
-        // update the circles that were already here
-        waterpoints.transition()
-          .duration(500)
-          .attr("cx", function(d) {
-            return projection([d.longitude, d.latitude])[0];
-          })
-          .attr("cy", function(d) {
-            return projection([d.longitude, d.latitude])[1];
-          })
-          .attr("class", "waterpoint " + checkedStatus);
-
-        // remove extra circles
-        waterpoints.exit()
-          .transition()
-          .duration(500)
-          .attr("opacity", 0)
-          .remove;
-      };
-    })
-  } else {
-    console.log("no CSV for " + regionName);
-  }
-}
-
-// change displayed data based on
-function statusClick() {
-  // if (zoomed = false) {
-    g.selectAll("path")
-      .data(jsonData.features)
-      .call(setMapAttr);
-  // } else {
-  //   // addPoints(this.value);
-  // }
-}
 
 // ####################################################################
 //    CREATE DEFAULTS FOR MAP
@@ -222,13 +36,13 @@ var projection = d3.geo.mercator()
 // create path variable with our projection
 var path = d3.geo.path().projection(projection);
 
-// generate svg object at botto mof "#map-viz" div class ".viz"
+// generate svg object at bottom of "#map-viz" div class ".viz"
 var geoSVG = d3.select("#map-viz .viz")
   .append("svg")
   .attr("width", w)
   .attr("height", h);
 
-// something about around the svg itself
+// something about around the svg itself, for zooming
 var g = geoSVG.append("g")
     .style("stroke-width", "1px");
 
@@ -292,11 +106,19 @@ d3.csv("data/regions.csv", function(data) {
         }
       }
 
-      // bind GeoJSON features (incl percent) to new path elements
+      // bind GeoJSON features (incl count) to new path elements
       g.selectAll("path")
         .data(jsonData.features)
         .enter().append("path")
-        .attr("d", path) // <-- our projection from above
+        .attr("d", path) // <-- draw path on our projection from abover
+        // regions store name as NAME_1 property but country is ENGLI_NAME
+        .attr("id", function(d) {
+          if (d.properties.NAME_1) {
+            return d.properties.NAME_1;
+          } else {
+            return d.properties.NAME_ENGLI;
+          }
+        })
         .call(setMapAttr)
         .on("click", clicked);
     }
@@ -395,3 +217,180 @@ d3.csv("data/counts.csv", function(error, data) {
          });
   }
 });
+
+// ####################################################################
+//    FUNCTIONS
+// ####################################################################
+
+// get the text (i.e., status_group value) of currently selected radio button
+function getStatus() {
+  var form, options;
+  // console.log("checking status");
+  form = document.getElementById('currentStatus');
+  options = form.elements.status_group;
+  for (var i = 0; i < options.length; i++) {
+    if (options[i].checked) {
+      // console.log(options[i].value);
+      return options[i].value;
+      break;
+    }
+  }
+}
+
+function setMapAttr(selection) {
+  var opPct;
+  // get which radio button is checked
+  checkedStatus = getStatus();
+
+  // now add domain to scale. need to update after every getStatus()
+  opacityScale.domain(opacityDomain[checkedStatus]);
+
+  // set attributes on path elements based on checkedStatus
+  selection
+    // opacity is quartile of count out of all counts of that class
+    .style("fill-opacity", function(d) {
+      // value of current checkedStatus count
+      opPct = +d.properties[checkedStatus];
+      // validate property exists, because not all regions are in csv
+      if (opPct) {
+        // get opacity for that class's quartiles
+        return opacityScale(opPct);
+      } else {
+        // country path or region missing from CSV.
+        return 1;
+      }
+    })
+    .attr("class", function(d) {
+      // if the property for the checkedStatus exists, set class as that checkedStatus, which defines the fill color (in CSS). Also include "region" for gen CSS rules. If no checkedStatus property, add "missing" class.
+      if (+d.properties[checkedStatus]) {
+        return("region " + checkedStatus);
+      } else {
+        // otherwise assign to class "missing"; includes country-path
+        return("region missing");
+      }
+    });
+}
+
+// zoom on region when clicked..
+function clicked(d) {
+  // if the region clicked is already "active" reset to original view
+  if (active.node() === this) return reset();
+
+  // remove the "active" class from the formerly "active" node
+  active.classed("active", false);
+
+  // add "active" class to current selection
+  active = d3.select(this)
+    .classed("active", true);
+
+  g.selectAll("path")
+    // trying to keep "Tanzania" path white with others fully transparent, but it's not really working. Perhaps need to learn more about keys.
+    // .data(jsonData)
+    .transition()
+    .duration(750)
+    .style("fill-opacity", function(d) {
+      if (d.id == "Tanzania") {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    // call function to add data points to region
+    // not quite working yet
+    if (zoomed = true) {
+      addPoints(active.node());
+    }
+
+  // set new view area
+  var bounds = path.bounds(d),
+      dx = bounds[1][0] - bounds[0][0],
+      dy = bounds[1][1] - bounds[0][1],
+      x = (bounds[0][0] + bounds[1][0]) / 2,
+      y = (bounds[0][1] + bounds[1][1]) / 2,
+      scale = .9 / Math.max(dx / w, dy / h),
+      translate = [w / 2 - scale * x, h / 2 - scale * y];
+
+  // transition to new view
+  g.transition()
+      .duration(750)
+      .style("stroke-width", 1.5 / scale + "px")
+      .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+}
+
+// zoom out when clicked again
+function reset() {
+  active.classed("active", false);
+  active = d3.select(null);
+  zoomed = false;
+  g.selectAll("circle").remove();
+  g.selectAll("path")
+    .transition()
+    .duration(750)
+    .call(setMapAttr);
+  g.transition()
+      .duration(750)
+      .style("stroke-width", "1.5px")
+      .attr("transform", "");
+}
+
+function addPoints(regionNode) {
+  // get which radio button is checked
+  checkedStatus = getStatus();
+
+  var fileName = "data/" + regionNode.id + ".csv";
+  if (fileName) {
+
+    // load data for water points
+    d3.csv(fileName, function(error, oneRegion) {
+      if(error) {   // if error is not NULL, i.e. data file loaded wrong
+        console.log(error);
+      } else {
+        // ??? Can I filter by status_group here?
+        var waterpoints = g.selectAll("circle").data(oneRegion);
+        // add points for any new elements
+        waterpoints.enter()
+          .append("circle")
+          .attr("cx", function(d) {
+            return projection([d.longitude, d.latitude])[0];
+          })
+          .attr("cy", function(d) {
+            return projection([d.longitude, d.latitude])[1];
+          })
+          .attr("class", "waterpoint " + checkedStatus)
+          .attr("r", 2);
+
+        // update the circles that were already here
+        waterpoints.transition()
+          .duration(500)
+          .attr("cx", function(d) {
+            return projection([d.longitude, d.latitude])[0];
+          })
+          .attr("cy", function(d) {
+            return projection([d.longitude, d.latitude])[1];
+          })
+          .attr("class", "waterpoint " + checkedStatus);
+
+        // remove extra circles
+        waterpoints.exit()
+          .transition()
+          .duration(500)
+          .attr("opacity", 0)
+          .remove;
+      };
+    })
+  } else {
+    console.log("no CSV for " + regionName);
+  }
+}
+
+// change displayed data based on current selected status_group
+function statusClick() {
+  if (zoomed = false) {
+    g.selectAll("path")
+      .data(jsonData.features)
+      .call(setMapAttr);
+  } else {
+    addPoints(active.node());
+  }
+}
