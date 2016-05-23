@@ -8,8 +8,6 @@ body {
   text-decoration-color: white;
 }
 
-
-
 /* *************************************************************
  styles for MAIN element, but I'm not including MAIN here to make the
 CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
@@ -91,11 +89,13 @@ class is more specific than element name, so
 /******************************************************/
 path.region:not(.missing) {
   pointer-events: all;
+  stroke: black;
 }
 
 /* targets all "region" class paths (in map) except those that are also class "missing" and changes settings on hover (because we want missing regions not to change)*/
 path.region:not(.missing):hover {
   stroke-width: 3px;
+
 }
 
 .waterpoint {
@@ -113,16 +113,13 @@ needs to be color-coded for target values. */
 }
 
 .functional {
-  fill: rgb(145,191,219);   /* blue */
-  stroke: rgb(145,191,219);
+  fill: #08519c;   /* blue */
 }
-.functional-needs-repair {    /* yellow */
-  fill: rgb(255,255,191);
-  stroke: rgb(255,255,191);
+.functional-needs-repair {    /* orange */
+  fill: #a63603;
 }
-.non-functional {     /* orange */
-  fill: rgb(252,141,89);
-  stroke: rgb(252,141,89);
+.non-functional {     /* red */
+  fill: #a50f15;
 }
 .missing {
   fill: #999999;  /* to match background-color */
