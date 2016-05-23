@@ -8,7 +8,7 @@
 //    SOME GLOBAL VARIABLES
 // ####################################################################
 // width and height of mapSVG
-var w = 700, h = 600;
+var w = 750, h = 750;
 // current checked radio button for Status
 var checkedStatus = getStatus();
 // variables to hold main data sets; may use outside map function
@@ -39,7 +39,7 @@ var path = d3.geo.path().projection(projection);
 // generate svg object at bottom of "#map-viz" div class ".viz"
 var geoSVG = d3.select("#map-viz .viz")
   .append("svg")
-  .attr("style", "outline: thin solid black;")
+  // .attr("style", "outline: thin solid black;")
   .attr("width", w)
   .attr("height", h)
   .attr("border", 1);

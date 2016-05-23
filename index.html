@@ -22,38 +22,23 @@
     <!-- "main" section is to tag this semantically, and keep it a sibling of
     "header" and "footer" -->
     <main role="main">
-      <!-- <section id="page-toc">
-        <aside>
-          <h1 id="on-this-page">On this page</h1>
-          <!- eventually try to add dynamically with JavaScript
-          <nav id="page-nav">
-            <ul>
-              <li><a href="#title">Water Pump Functionality Dashboard</a></li>
-              <li><a href="#map-of-tanzania">Map of Tanzania</a></li>
-              <li><a href="#functionality-totals">Functionality Totals</a></li>
-              <li><a href="#status-by-year-of-construction">Water Point Status by Year of Construction</a></li>
-              <li><a href="#status-by-year-of-construction">Water Point Status by Year of Construction</a></li>
-            </ul>
-          </nav>
-        </aside>
-      </section> -->
-
       <!-- add a section for each visual, with a descriptive id attribute.
           Note, "id" must be unique. Everything related to this specific visual
           should go inside the section tags -->
       <section id="map-viz">
-        <!-- each section should have an H1, to use in the TOC nav element -->
-        <h1 id="map-of-tanzania">Map of Tanzania</h1>
-        <fieldset id="currentStatus">
-          <legend>
-            Status
-          </legend>
-
-          <input type="radio" name="status_group" class="mapFilter" value="non-functional" checked="checked" /> non-functional <br />
-          <input type="radio" name="status_group" class="mapFilter"  value="functional-needs-repair" /> functional-needs-repair <br />
-          <input type="radio" name="status_group" class="mapFilter" value="functional" /> functional <br />
-        </fieldset>
         <figure>
+<!-- contained elements are on TOP of SVG -->
+          <aside id="map-info">
+            <fieldset id="currentStatus">
+              <legend>
+                Status
+              </legend>
+
+              <input type="radio" name="status_group" class="mapFilter" value="non-functional" checked="checked" /> non-functional <br />
+              <input type="radio" name="status_group" class="mapFilter"  value="functional-needs-repair" /> functional-needs-repair <br />
+              <input type="radio" name="status_group" class="mapFilter" value="functional" /> functional <br />
+            </fieldset>
+          </aside>
           <div class="viz">
             <!-- this is what we'll select to add svg with d3. Selector *should* be "#map .viz" (note space between id and class). Note that d3 will append the svg to the END of the element, so by adding a div we can be sure it gets placed correctly -->
           </div>

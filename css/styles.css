@@ -8,6 +8,11 @@ body {
   text-decoration-color: white;
 }
 
+main {
+  /*max-width: 1250px;*/
+  margin: auto;
+}
+
 /* *************************************************************
  styles for MAIN element, but I'm not including MAIN here to make the
 CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
@@ -62,12 +67,29 @@ p {
   max-width: 50%;
 }
 
+
+#map-viz {
+  width: 1250px;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+#map-info {
+  position: absolute;
+  width: 500px;
+  z-index: 5;
+}
+
 fieldset {
   text-align: left;
-  max-width: 250px;
-  padding: 20px 30px;
+  width: 250px;
+  padding: 5px 15px 15px 15px;
+  margin: 70px auto 30px auto;
   border: 2px solid #444;
   border-radius: 10px;
+  background-color: #b6b6b6;
 }
 
 legend {
@@ -206,8 +228,10 @@ use this for universal element styles
 *********************/
 svg {
   display: block;
-  margin:auto;
+  margin: auto;
   background-color: #b6b6b6;
+  outline: 3px solid black;
+  padding-left: 500px
 }
 
 
