@@ -238,7 +238,7 @@ function getStatus() {
 }
 
 function setMapAttr(selection) {
-  var opPct;
+  var pointCount;
   // get which radio button is checked
   checkedStatus = getStatus();
 
@@ -250,11 +250,11 @@ function setMapAttr(selection) {
     // opacity is quartile of count out of all counts of that class
     .style("fill-opacity", function(d) {
       // value of current checkedStatus count
-      opPct = +d.properties[checkedStatus];
+      pointCount = +d.properties[checkedStatus];
       // validate property exists, because not all regions are in csv
-      if (opPct) {
+      if (pointCount) {
         // get opacity for that class's quartiles
-        return opacityScale(opPct);
+        return opacityScale(pointCount);
       } else {
         // country path or region missing from CSV.
         return 1;
@@ -360,7 +360,14 @@ function addPoints(regionNode) {
           .attr("class", "waterpoint " + checkedStatus)
           .attr("r", 2);
 
-        // update the circles that were already here
+        // remove extra circles
+        waterpoints.exit()
+          .transition()
+          .duration(500)
+          .attr("opacity", 0)
+          .remove();
+
+        // update the circles that are left
         waterpoints.transition()
           .duration(500)
           .attr("cx", function(d) {
@@ -371,12 +378,6 @@ function addPoints(regionNode) {
           })
           .attr("class", "waterpoint " + checkedStatus);
 
-        // remove extra circles
-        waterpoints.exit()
-          .transition()
-          .duration(500)
-          .attr("opacity", 0)
-          .remove;
       };
     })
   } else {
@@ -386,9 +387,9 @@ function addPoints(regionNode) {
 
 // change displayed data based on current selected status_group
 function statusClick() {
-  if (zoomed = false) {
+  if (zoomed == false) {
     g.selectAll("path")
-      .data(jsonData.features)
+      // .data(jsonData.features)
       .call(setMapAttr);
   } else {
     addPoints(active.node());
