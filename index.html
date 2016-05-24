@@ -22,93 +22,80 @@
     <!-- "main" section is to tag this semantically, and keep it a sibling of
     "header" and "footer" -->
     <main role="main">
-      <section id="page-toc">
-        <aside>
-          <h1 id="on-this-page">On this page</h1>
-          <!-- eventually try to add dynamically with JavaScript -->
-          <nav id="page-nav">
-            <ul>
-              <li><a href="#title">Water Pump Functionality Dashboard</a></li>
-              <li><a href="#map-of-tanzania">Map of Tanzania</a></li>
-              <li><a href="#functionality-totals">Functionality Totals</a></li>
-              <li><a href="#status-by-year-of-construction">Water Point Status by Year of Construction</a></li>
-              <li><a href="#status-by-year-of-construction">Water Point Status by Year of Construction</a></li>
-            </ul>
-          </nav>
-        </aside>
-      </section>
-
       <!-- add a section for each visual, with a descriptive id attribute.
           Note, "id" must be unique. Everything related to this specific visual
           should go inside the section tags -->
       <section id="map-viz">
-        <!-- each section should have an H1, to use in the TOC nav element -->
-        <h1 id="map-of-tanzania">Map of Tanzania</h1>
-        <fieldset id="currentStatus">
-          <legend>
-            Status
-          </legend>
-
-          <input type="radio" name="status_group" class="mapFilter" value="non-functional" checked="checked" /> non-functional <br />
-          <input type="radio" name="status_group" class="mapFilter"  value="functional-needs-repair" /> functional-needs-repair <br />
-          <input type="radio" name="status_group" class="mapFilter" value="functional" /> functional <br />
-        </fieldset>
         <figure>
+<!-- contained elements are on TOP of SVG -->
+          <aside id="map-info">
+            <fieldset id="currentStatus">
+              <legend>
+                Status
+              </legend>
+              <p id="RegionName">
+                Tanzania
+              </p>
+              <input type="radio" name="status_group" class="mapFilter" value="non-functional" checked="checked" /> non-functional: <span class="classTotal">28,139</span><br />
+              <input type="radio" name="status_group" class="mapFilter"  value="functional-needs-repair" /> functional-needs-repair: <span class="classTotal">4,942</span><br />
+              <input type="radio" name="status_group" class="mapFilter" value="functional" /> functional: <span class="classTotal">41,169</span> <br />
+            </fieldset>
+            <div id="pie">
+              <p>
+                [pie chart will go here]
+              </p>
+              <!-- this is what we'll select to add pie chart with d3.  -->
+            </div>
+          </aside>
           <div class="viz">
-            <!-- this is what we'll select to add svg with d3. Selector *should* be "#map .viz" (note space between id and class). Note that d3 will append the svg to the END of the element, so by adding a div we can be sure it gets placed correctly -->
+            <!-- this is what we'll select to add map with d3. Selector *should* be "#map .viz" (note space between id and class). Note that d3 will append the svg to the END of the element, so by adding a div we can be sure it gets placed correctly -->
           </div>
+<!--
           <figcaption>
             This will be the caption, if we need one.
           </figcaption>
           <p>
             And this is descriptive text or what have you.
           </p>
-        </figure>
-      </section>
-	
-      <section id="barChart-viz">
-        <!-- each section should have an H1, to use in the TOC nav element -->
-        <h1 id="functionality-totals">Functionality Totals</h1>
-        <figure>
-          <div class="viz">
-            <!-- this is what we'll select to add svg with d3. Selector *should* be "#map .viz" (note space between id and class). Note that d3 will append the svg to the END of the element, so by adding a div we can be sure it gets placed correctly -->
-          </div>
-          <figcaption>
-            This will be the caption, if we need one.
-          </figcaption>
-          <p>
-            And this is descriptive text or what have you.
-          </p>
-        </figure>
+        </figure> -->
       </section>
 
-  	  <section id="status-year">
-        <h1 id="status-by-year-of-construction">Water Point Status by Year of Construction</h1>
-  	    <figure>
-          <div class="viz">
-            <!-- <img src="images/WaterPoint_Status_ConstYear.png" alt="Status by Construction Year" class="large"/> -->
-          </div>
-    		<figcaption>
-            This chart shows the count of water points by their year of construction and current functional status.
-          </figcaption>
-    		</figure>
-    		<p>
-			Placeholder text in case we need some here.
-    		</p>
+  	  <section id="tableau-widget">
+        <h3>
+          Below are interactive visualizations built on the most recent dataset. Use these visualizations to explore and investigate the data for your water point network and their functional status.
+    	 <br/>
+    	 <br/>
+    	 <script type='text/javascript' src='https://public.tableau.com/javascripts/api/viz_v1.js'>
+       </script>
+       <div class='tableauPlaceholder'>
+         <noscript>
+           <a href='http:&#47;&#47;MSPAwesome.github.io&#47;index'>
+             <img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Wa&#47;WaterDashboard&#47;ConstructionYear&#47;1_rss.png' style='border: none' />
+           </a>
+         </noscript>
+         <object class='tableauViz' width='982' height='745' style='display:none;'>
+           <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+           <param name='site_root' value='' />
+           <param name='name' value='WaterDashboard&#47;ConstructionYear' />
+           <param name='tabs' value='yes' />
+           <param name='toolbar' value='yes' />
+           <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Wa&#47;WaterDashboard&#47;ConstructionYear&#47;1.png' />
+            <param name='animate_transition' value='yes' />
+            <param name='display_static_image' value='yes' />
+            <param name='display_spinner' value='yes' />
+            <param name='display_overlay' value='yes' />
+            <param name='display_count' value='yes' />
+            <param name='showTabs' value='y' />
+          </object>
+        </div>
+        </h3>
       </section>
-	
-	<h3>
-      Below are interactive visualizations built on the most recent dataset. Use these visualizations to explore and investigate the data for your water point network and their functional status.
-	 <br/>
-	 <br/>
-	 <script type='text/javascript' src='https://public.tableau.com/javascripts/api/viz_v1.js'></script><div class='tableauPlaceholder'><noscript><a href='http:&#47;&#47;MSPAwesome.github.io&#47;index'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Wa&#47;WaterDashboard&#47;ConstructionYear&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz' width='982' height='745' style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='site_root' value='' /><param name='name' value='WaterDashboard&#47;ConstructionYear' /><param name='tabs' value='yes' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Wa&#47;WaterDashboard&#47;ConstructionYear&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='showTabs' value='y' /></object></div> 
-    </h3>
-	  
+
       <!--<section id="status-region">
         <h1 if="status-by-region">Water Point Status by Region</h1>
     		<figure>
           <div class="viz">
-            <img src="images/WaterPoint_Status_Region.png" alt="Status by Region" class="large"/> 
+            <img src="images/WaterPoint_Status_Region.png" alt="Status by Region" class="large"/>
           </div>
     			<figcaption> Legend: Green=Functional, Yellow=Needs Repair, Red=Non-Functional</figcaption>
     		</figure>
@@ -116,7 +103,7 @@
           This is a static image of Water Point status by region. The image will be updated to a JavaScript version in future sprints.
         </p>
   	  </section> -->
-	  
+
     </main>
     <footer>
       <p>

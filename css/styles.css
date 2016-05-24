@@ -3,12 +3,15 @@ body {
   font-family: Georgia, Times, serif;
   font-size: 100%;
   line-height: 1.4em;
-  background-color: #999999;
+  background-color: #686868;
   /*background-color: black;*/
   text-decoration-color: white;
 }
 
-
+main {
+  /*max-width: 1250px;*/
+  margin: auto;
+}
 
 /* *************************************************************
  styles for MAIN element, but I'm not including MAIN here to make the
@@ -26,12 +29,13 @@ CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
   text-decoration: none;}
 
 /* rest of page */
-h1, h2, h3, legend {
+h1, h2, h3, legend, #RegionName {
   font-family: 'Montserrat', sans-serif;
   font-weight: normal;
   text-align: center;
   padding-top: 15px;
 }
+
 h1 {
   font-size: 175%;
 }
@@ -64,16 +68,38 @@ p {
   max-width: 50%;
 }
 
-fieldset {
-  text-align: left;
-  max-width: 250px;
-  padding: 20px 30px;
-  border: 2px solid #444;
-  border-radius: 10px;
+
+#map-viz {
+  width: 1250px;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
 }
 
-legend {
-  padding: 2px;
+#map-info {
+  position: absolute;
+  width: 500px;
+  z-index: 5;
+}
+
+fieldset, #pie {
+  text-align: left;
+  width: 250px;
+  padding: 5px 15px 15px 15px;
+  margin: 70px auto 30px auto;
+  border: 2px solid #444;
+  border-radius: 10px;
+  background-color: #b6b6b6;
+}
+
+#pie {
+  height: 250px;
+}
+
+legend, #RegionName {
+  margin: 0;
+  padding: 5px 2px;
   text-align: left;
 }
 
@@ -91,17 +117,17 @@ class is more specific than element name, so
 /******************************************************/
 path.region:not(.missing) {
   pointer-events: all;
+  stroke: black;
 }
 
 /* targets all "region" class paths (in map) except those that are also class "missing" and changes settings on hover (because we want missing regions not to change)*/
 path.region:not(.missing):hover {
   stroke-width: 3px;
+
 }
 
 .waterpoint {
-  opacity: 0.3;
-  stroke-width: 1px;
-  stroke-opacity: 1;
+  opacity: 0.1;
 }
 
 /* try to use these classes for all dynamically created content that
@@ -113,21 +139,21 @@ needs to be color-coded for target values. */
 }
 
 .functional {
-  fill: rgb(145,191,219);   /* blue */
-  stroke: rgb(145,191,219);
+  fill: #08519c;   /* blue */
 }
-.functional-needs-repair {    /* yellow */
-  fill: rgb(255,255,191);
-  stroke: rgb(255,255,191);
+.functional-needs-repair {    /* orange */
+  fill: #a63603;
 }
-.non-functional {     /* orange */
-  fill: rgb(252,141,89);
-  stroke: rgb(252,141,89);
+.non-functional {     /* red */
+  fill: #a50f15;
 }
 .missing {
   fill: #999999;  /* to match background-color */
 }
 
+.africa {
+  fill: green;
+}
 
 
 
@@ -208,7 +234,10 @@ use this for universal element styles
 *********************/
 svg {
   display: block;
-  margin:auto;
+  margin: auto;
+  background-color: #b6b6b6;
+  outline: 3px solid black;
+  padding-left: 500px
 }
 
 
