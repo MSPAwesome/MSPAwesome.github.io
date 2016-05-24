@@ -83,7 +83,7 @@ p {
   z-index: 5;
 }
 
-fieldset {
+fieldset, #pie {
   text-align: left;
   width: 250px;
   padding: 5px 15px 15px 15px;
@@ -93,6 +93,9 @@ fieldset {
   background-color: #b6b6b6;
 }
 
+#pie {
+  height: 250px;
+}
 
 legend, #RegionName {
   margin: 0;
