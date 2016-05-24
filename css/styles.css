@@ -29,12 +29,13 @@ CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
   text-decoration: none;}
 
 /* rest of page */
-h1, h2, h3, legend {
+h1, h2, h3, legend, #RegionName {
   font-family: 'Montserrat', sans-serif;
   font-weight: normal;
   text-align: center;
   padding-top: 15px;
 }
+
 h1 {
   font-size: 175%;
 }
@@ -92,8 +93,10 @@ fieldset {
   background-color: #b6b6b6;
 }
 
-legend {
-  padding: 2px;
+
+legend, #RegionName {
+  margin: 0;
+  padding: 5px 2px;
   text-align: left;
 }
 
