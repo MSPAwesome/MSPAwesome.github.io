@@ -87,10 +87,8 @@ d3.csv("data/regions.csv", function(data) {
       for (var i = 0; i < jsonData.features.length; i++) {
         // ...  to get region name ...
         jsonFeature = jsonData.features[i].properties
-        // (note, country object does not have NAME_1 property...
         mapRegion = jsonFeature.NAME_1;
 
-        // ... so verify we have a value here first)
         if (mapRegion) {
           // ... then loop through csv to find matching row ...
           for (var j = 0; j < regionData.length; j++) {
@@ -98,7 +96,7 @@ d3.csv("data/regions.csv", function(data) {
             dataRegion = csvRow.region;
             // ... when we find a match ...
             if (dataRegion == mapRegion) {
-              // ... add each column:value pair to json properties (for everything except country path, of course)
+              // ... add each column:value pair to json properties
               Object.keys(csvRow).forEach(function(key) {
                 jsonFeature[key] = csvRow[key];
               })
@@ -125,17 +123,13 @@ d3.csv("data/regions.csv", function(data) {
       g.selectAll("path")
         .data(jsonData.features)
         .enter().append("path")
-        .attr("d", path) // <-- draw path on our projection from abover
-        // regions store name as NAME_1 property but country is ENGLI_NAME
+        .attr("d", path) // <-- draw path on our projection from above
         .attr("id", function(d) {
           if (d.properties.NAME_1) {
             return d.properties.NAME_1;
-          } else {
-            return d.properties.NAME_ENGLI;
           }
         })
-        .style("fill-opacity", 0)
-        .style("opacity", 0)
+        .style("opacity", 0)    // set opacity to 0 so we can transition in
         .call(setMapAttr)
         .on("click", clicked);
     }
@@ -298,7 +292,7 @@ function clicked(d) {
 
   // remove the "active" class from the formerly "active" node
   active.classed("active", false);
-
+  zoomed = true;
   // add "active" class to current selection
   active = d3.select(this)
     .classed("active", true);
@@ -317,8 +311,8 @@ function clicked(d) {
     });
 
     // call function to add data points to region
-    // not quite working yet
-    if (zoomed = true) {
+
+    if (zoomed == true) {
       addPoints(active.node());
     }
 
