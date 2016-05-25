@@ -15,7 +15,7 @@ var checkedStatus = getStatus();
 var regionData, jsonData;
 // for zoom
 var active = d3.select(null);
-var zoomed = false;
+// var zoomed = false;
 // for opacity scale (for map); range is for quartiles
 var opacityDomain = {}, opacityRange = [0.25, 0.5, 0.75, 1];
 
@@ -41,8 +41,8 @@ var geoSVG = d3.select("#map-viz .viz")
   .append("svg")
   // .attr("style", "outline: thin solid black;")
   .attr("width", w)
-  .attr("height", h)
-  .attr("border", 1);
+  .attr("height", h);
+  // .attr("border", 1);
 
 // something about the svg itself, for zooming
 var g = geoSVG.append("g")
@@ -96,78 +96,40 @@ d3.csv("data/regions.csv", function(data) {
             dataRegion = csvRow.region;
             // ... when we find a match ...
             if (dataRegion == mapRegion) {
-              // ... add each column:value pair to json properties
-              Object.keys(csvRow).forEach(function(key) {
-                jsonFeature[key] = csvRow[key];
-              })
+              // ... add each column:value pair to json
+              // add the whole object, to make it easier to pull out later for Status and pie chart
+              jsonFeature["csvData"] = csvRow;
               break;
             }
           }
         }
       }
 
-      // // frame around svg box
-      // var frame = g.append("rect")
-      //     .attr("width", w)
-      //     .attr("height", h)
-      //     .attr("x", 0)
-      //     .attr("y", 0)
-      //     // .transition()
-      //     // .duration(1000)
-      //     .style("stroke", "black")
-      //     .style("stroke-width", 1)
-      //     .style("fill", "none")
-      //     .style("padding", 20);
 
-      // bind GeoJSON features (incl count) to new path elements
+      // bind GeoJSON features (incl csvData obj) to new path elements
       g.selectAll("path")
         .data(jsonData.features)
         .enter().append("path")
         .attr("d", path) // <-- draw path on our projection from above
         .attr("id", function(d) {
-          if (d.properties.NAME_1) {
-            return d.properties.NAME_1;
+          // regions not in csv won't have this property
+          if (d.properties.csvData) {
+            return d.properties.csvData.region;
           }
         })
         .style("opacity", 0)    // set opacity to 0 so we can transition in
         .call(setMapAttr)
         .on("click", clicked);
+
+      // set whole-country path as "active" (means zoomed out, controls Status box text as well)
+      // active = d3.select("#Tanzania").classed("active", true);
     }
   })
 });
 
 d3.selectAll("input")
   .on("click", statusClick);
-/* ********************************************************
-  This is for TopoJSON. Smaller file, but no district names.
-  Also only starts at District level, not region level.
 
-d3.json("geo/TZA_adm2.topojson", function(error, json) {
-  if(error) {
-    console.log(error);
-  } else {
-    console.log(json);
-
-    // projection of map to 2D plane
-    var projection = d3.geo.mercator()
-      .center([34.8888, -6.3690])
-      .translate([w / 2, h / 2])
-      .scale(3000);
-    // path generator to format projection to SVG
-    var path = d3.geo.path()
-      .projection(projection);
-    //must convert TopoJSON back to GeoJSON for display
-    var subunits = topojson.feature(json, json.objects.TZA_adm2)
-
-    // create new path elements and bind topoJSON features to them
-    geoSVG.selectAll(".TZA_adm2")
-      .data(subunits.features)
-      .enter().append("path")
-      .attr("class", "region")
-      .attr("d", path);
-  }
-});
-**************************************************************/
 
 // // ****************************************************
 // // ****************************************************
@@ -248,8 +210,22 @@ function getStatus() {
   }
 }
 
+// "activeData" is the csv data for that region. region="Tanzania" if zoomed-out, region name if zoomed in. "active" variable should be set before calling this function.
+function updateMapInfo(activeCsvData) {
+  // loop through this object's csvData object to add data to Status
+  Object.keys(activeCsvData).forEach(function (key) {
+    var item = document.getElementById(key);
+    item.textContent = key + ": " + activeCsvData[key];
+  })
+}
+
+// set region path attributes if zoomed out
+// selection is selection of path elements
 function setMapAttr(selection) {
   var pointCount;
+  var currentRegion;
+  var currentCsvData = {};
+  var tzaData = {};
   // get which radio button is checked
   checkedStatus = getStatus();
 
@@ -263,39 +239,60 @@ function setMapAttr(selection) {
     .duration(750)
     .style("opacity", 1)
     .style("fill-opacity", function(d) {
-      // value of current checkedStatus count
-      pointCount = +d.properties[checkedStatus];
-      // validate property exists, because not all regions are in csv
-      if (pointCount) {
-        // get opacity for that class's quartiles
-        return opacityScale(pointCount);
-      } else {
-        // country path or region missing from CSV.
+      // not every d has csvData, so check first
+      currentCsvData = d.properties.csvData;
+      if (currentCsvData) {
+        // value of current checkedStatus count
+        pointCount = +currentCsvData[checkedStatus];
+        currentRegion = currentCsvData.region;
+        if (currentRegion == "Tanzania") {
+          // country path
+          // get csv data for later updateMapInfo
+          // console.log(currentCsvData);
+          tzaData = currentCsvData;
+          return 1;
+        } else {
+          // get opacity for that class's quartiles
+          return opacityScale(pointCount);
+        }
         return 1;
       }
     })
     .attr("class", function(d) {
-      // if the property for the checkedStatus exists, set class as that checkedStatus, which defines the fill color (in CSS). Also include "region" for gen CSS rules. If no checkedStatus property, add "missing" class.
-      if (+d.properties[checkedStatus]) {
-        return("region " + checkedStatus);
+      // if the property for the csvData object exists, set class as that checkedStatus, which defines the fill color (in CSS). Also include "region" for gen CSS rules. If no checkedStatus property, add "missing" class. Coun path gets "active" since we're by definition zoomed out (or is that added in "reset()"?)
+      if (d.properties.csvData) {
+        if (d.properties.csvData.region == "Tanzania") {
+          return("region country active");
+        } else {
+          return("region " + checkedStatus);
+        }
       } else {
         // otherwise assign to class "missing"; includes country-path
         return("region missing");
       }
     });
+
+    // we're zoomed out, so set main country path as "active"
+    active = d3.select("#Tanzania");
+    updateMapInfo(tzaData);
 }
 
 // zoom on region when clicked..
 function clicked(d) {
+  var thisCsvData = {};
+  thisCsvData = d.properties.csvData;
   // if the region clicked is already "active" reset to original view
+  // console.log(active);
   if (active.node() === this) return reset();
 
   // remove the "active" class from the formerly "active" node
   active.classed("active", false);
-  zoomed = true;
+
   // add "active" class to current selection
   active = d3.select(this)
     .classed("active", true);
+
+  updateMapInfo(thisCsvData);
 
   g.selectAll("path")
     // trying to keep "Tanzania" path white with others fully transparent, but it's not really working. Perhaps need to learn more about keys.
@@ -303,18 +300,19 @@ function clicked(d) {
     // .delay(750)
     .duration(1000)
     .style("fill-opacity", function(d) {
-      if (d.id == "Tanzania") {
-        return 1;
-      } else {
-        return 0;
+      if (d.properties.csvData) {
+        if (d.properties.csvData.region == "Tanzania") {
+          return 1;
+        } else {
+          return 0;
+        }
       }
     });
 
-    // call function to add data points to region
-
-    if (zoomed == true) {
-      addPoints(active.node());
-    }
+  // call function to add (and remove!) data points to region
+  if (active.node().id !== "Tanzania") {
+    addPoints(active.node());
+  }
 
   // set new view area
   var bounds = path.bounds(d),
@@ -334,9 +332,9 @@ function clicked(d) {
 
 // zoom out when clicked again
 function reset() {
+  // remove active class from current region
   active.classed("active", false);
   active = d3.select(null);
-  zoomed = false;
   g.selectAll("circle")
     .transition()
     .duration(1000)
@@ -417,7 +415,7 @@ function addPoints(regionNode) {
 
 // change displayed data based on current selected status_group
 function statusClick() {
-  if (zoomed == false) {
+  if (active.node().id == "Tanzania") {
     g.selectAll("path")
       // .data(jsonData.features)
       .transition()

@@ -29,7 +29,7 @@ CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
   text-decoration: none;}
 
 /* rest of page */
-h1, h2, h3, legend, #RegionName {
+h1, h2, h3, legend, #region {
   font-family: 'Montserrat', sans-serif;
   font-weight: normal;
   text-align: center;
@@ -97,7 +97,7 @@ fieldset, #pie {
   height: 250px;
 }
 
-legend, #RegionName {
+legend, #region {
   margin: 0;
   padding: 5px 2px;
   text-align: left;
@@ -237,7 +237,8 @@ svg {
   margin: auto;
   background-color: #b6b6b6;
   outline: 3px solid black;
-  padding-left: 500px
+  padding-left: 500px  /* to offset the map to the */
+  /* right of the status box and pie chart */
 }
 
 
