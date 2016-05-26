@@ -9,7 +9,7 @@
 // ####################################################################
 // width and height of mapSVG
 var w = 750, h = 750;
-
+var pieW = 250, pieH = 250;
 // current checked radio button for Status
 var checkedStatus = getStatus();
 // variables to hold main data sets; may use outside map function
@@ -47,7 +47,29 @@ var geoSVG = d3.select("#map-viz .viz")
 
 // g attribute groups elements together, so you can zoom all
 var g = geoSVG.append("g")
-    .style("stroke-width", "1px");
+  .style("stroke-width", "1px");
+
+// pie chart!
+var pie = d3.layout.pie();
+
+// create variables for pie
+var outerRadius = pieW / 2;
+var innerRadius = 0;
+var arc = d3.svg.arc()
+  .innerRadius(innerRadius)
+  .outerRadius(outerRadius);
+
+// create the svg element
+var pieSVG = d3.select("#pie")
+  .append("svg")
+  .attr("width", pieW)
+  .attr("height", pieH);
+
+// create new group ("g") for each wedge
+var arcs = pieSVG.append("g.arc")
+  .attr("class", "arc")
+  .attr("transform", "translate(" + outerRadius + ", " + outerRadius + ")")
+  .style("opacity", 0);
 
 /* load csv data here, then merge with map data. This way we only have to
 iterate through the csv once to match region names, not at every transition.*/
@@ -57,7 +79,7 @@ d3.csv("data/regions.csv", function(data) {
 
   // create object with arrays of all values for each class, for use in scale
   // loop through each region object in data array
-  regionData.forEach(function (region){
+  regionData.forEach(function (region) {
 
     // loop thru each key in region object
     Object.keys(region).forEach(function (key){
@@ -87,7 +109,7 @@ d3.csv("data/regions.csv", function(data) {
       // loop through json features (i.e., regions) ...
       for (var i = 0; i < jsonData.features.length; i++) {
         // ...  to get region name ...
-        jsonFeature = jsonData.features[i].properties
+        jsonFeature = jsonData.features[i].properties;
         mapRegion = jsonFeature.NAME_1;
 
         if (mapRegion) {
@@ -125,10 +147,12 @@ d3.csv("data/regions.csv", function(data) {
         .on("click", clicked);
 
       // set whole-country path as "active" (means zoomed out, controls Status box text as well)
-      // active = d3.select("#Tanzania").classed("active", true);
+      active = d3.select("#Tanzania").classed("active", true);
     }
-  })
+  });
 });
+
+
 
 d3.selectAll("input")
   .on("click", statusClick);
@@ -216,8 +240,6 @@ function getStatus() {
 // "activeData" is the csv data for that region. region="Tanzania" if zoomed-out, region name if zoomed in. "active" variable should be set before calling this function.
 function updateMapInfo(activeCsvData) {
   var regCounts = [];
-  var pieW = 250, pieH = 250;
-  console.log(activeCsvData);
 
   // loop through this object's csvData object to add data to Status
   Object.keys(activeCsvData).forEach(function (key) {
@@ -229,46 +251,34 @@ function updateMapInfo(activeCsvData) {
       // create array to bind to pie chart
       regCounts.push(activeCsvData[key])
     }
-  })
-  // console.log(regCounts);
-  // pie chart!
-  var pie = d3.layout.pie();
+  });
 
-  // create variables for pie
-  var outerRadius = pieW / 2;
-  var innerRadius = 0;
-  var arc = d3.svg.arc()
-    .innerRadius(innerRadius)
-    .outerRadius(outerRadius);
+  var piePieces = arcs.selectAll("path").data(regCounts);
 
-  // create the svg element
-  var pieSVG = d3.select("#pie-viz")
-    .append("svg")
-    .attr("width", pieW)
-    .attr("height", pieH)
-    .attr("id", "pie");
+  piePieces.exit()
+    .transition()
+    .duration(750)
+    .style("opacity", 0)
+    .remove();
 
-  // create new group ("g") for each wedge
-  var arcs = pieSVG.selectAll("g.arc")
-    .data(pie(regCounts))
-    .enter()
-    .append("g")
-    .attr("class", function(d) {
-        Object.keys(activeCsvData).forEach(function (key) {
-          if (activeCsvData[key] == d) {
-            return "arc " + key;
-          }
-        })
+  piePieces.enter()
+    .append("path")
+    .attr("d", arc)
+    .style("opacity", 1);
+
+  var statusClass;
+  piePieces.attr("class", function(d) {
+      Object.keys(activeCsvData).forEach(function (key) {
+        if (activeCsvData[key] == d.value) {
+          statusClass = key;
+        }
+      })
+      return statusClass;
     })
-    // function(d) {
-    //   console.log(d);
-    //   return "arc " + d.checkedStatus;
-    // })
-    .attr("transform", "translate(" + outerRadius + ", " + outerRadius + ")");
-
-  // Draw arcs
-  arcs.append("path")
-    .attr("d", arc);
+    .transition()
+    .duration(750)
+    .style("opacity", 1)
+    .style("fill-opacity", 0.75);
 
   // Add text labels
   arcs.append("text")
@@ -279,8 +289,7 @@ function updateMapInfo(activeCsvData) {
     .text(function(d) {
       return d.value;
     });
-}
-
+  };
 // set region path attributes if zoomed out
 // selection is selection of path elements
 function setMapAttr(selection) {
