@@ -24,6 +24,10 @@ CSS simpler. We'll have selectors for HEADER and FOOTER elements later on
   float: right;
   }
 
+a {
+  color: black;
+}
+
 #page-nav li a {
   color: black;
   text-decoration: none;}
@@ -51,6 +55,11 @@ h2 {
 h3 {
   font-size: 112.5%;
 }
+
+h3 {
+  font-size: 100%;
+}
+
 
 p, figcaption, fieldset {
   text-align: center;
@@ -220,7 +229,7 @@ height: 20%;
 /*******   Tableau Dashboard*****************************************/
 /********************************************************************/
 
-#tableau-widget {
+#tableau-widget {	
      width: 1000px;
      padding: 5px 15px 15px 15px;
      margin: 70px auto 30px auto;
