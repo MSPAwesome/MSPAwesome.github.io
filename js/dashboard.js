@@ -9,6 +9,7 @@
 // ####################################################################
 // width and height of mapSVG
 var w = 750, h = 750;
+
 // current checked radio button for Status
 var checkedStatus = getStatus();
 // variables to hold main data sets; may use outside map function
@@ -44,7 +45,7 @@ var geoSVG = d3.select("#map-viz .viz")
   .attr("height", h);
   // .attr("border", 1);
 
-// something about the svg itself, for zooming
+// g attribute groups elements together, so you can zoom all
 var g = geoSVG.append("g")
     .style("stroke-width", "1px");
 
@@ -105,6 +106,7 @@ d3.csv("data/regions.csv", function(data) {
         }
       }
 
+      // console.log(jsonData.features);
 
       // bind GeoJSON features (incl csvData obj) to new path elements
       g.selectAll("path")
@@ -114,6 +116,7 @@ d3.csv("data/regions.csv", function(data) {
         .attr("id", function(d) {
           // regions not in csv won't have this property
           if (d.properties.csvData) {
+            // console.log(d.properties.csvData.region);
             return d.properties.csvData.region;
           }
         })
@@ -212,11 +215,70 @@ function getStatus() {
 
 // "activeData" is the csv data for that region. region="Tanzania" if zoomed-out, region name if zoomed in. "active" variable should be set before calling this function.
 function updateMapInfo(activeCsvData) {
+  var regCounts = [];
+  var pieW = 250, pieH = 250;
+  console.log(activeCsvData);
+
   // loop through this object's csvData object to add data to Status
   Object.keys(activeCsvData).forEach(function (key) {
+    // update region name
     var item = document.getElementById(key);
     item.textContent = key + ": " + activeCsvData[key];
+
+    if (key !== "region") {
+      // create array to bind to pie chart
+      regCounts.push(activeCsvData[key])
+    }
   })
+  // console.log(regCounts);
+  // pie chart!
+  var pie = d3.layout.pie();
+
+  // create variables for pie
+  var outerRadius = pieW / 2;
+  var innerRadius = 0;
+  var arc = d3.svg.arc()
+    .innerRadius(innerRadius)
+    .outerRadius(outerRadius);
+
+  // create the svg element
+  var pieSVG = d3.select("#pie-viz")
+    .append("svg")
+    .attr("width", pieW)
+    .attr("height", pieH)
+    .attr("id", "pie");
+
+  // create new group ("g") for each wedge
+  var arcs = pieSVG.selectAll("g.arc")
+    .data(pie(regCounts))
+    .enter()
+    .append("g")
+    .attr("class", function(d) {
+        Object.keys(activeCsvData).forEach(function (key) {
+          if (activeCsvData[key] == d) {
+            return "arc " + key;
+          }
+        })
+    })
+    // function(d) {
+    //   console.log(d);
+    //   return "arc " + d.checkedStatus;
+    // })
+    .attr("transform", "translate(" + outerRadius + ", " + outerRadius + ")");
+
+  // Draw arcs
+  arcs.append("path")
+    .attr("d", arc);
+
+  // Add text labels
+  arcs.append("text")
+    .attr("transform", function(d) {
+      return "translate(" + arc.centroid(d) + ")";
+    })
+    .attr("text-anchor", "middle")
+    .text(function(d) {
+      return d.value;
+    });
 }
 
 // set region path attributes if zoomed out

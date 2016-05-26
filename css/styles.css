@@ -93,9 +93,6 @@ fieldset, #pie {
   background-color: #b6b6b6;
 }
 
-#pie {
-  height: 250px;
-}
 
 legend, #region {
   margin: 0;
@@ -234,6 +231,9 @@ use this for universal element styles
 *********************/
 svg {
   display: block;
+}
+
+svg:not(#pie) {
   margin: auto;
   background-color: #b6b6b6;
   outline: 3px solid black;
