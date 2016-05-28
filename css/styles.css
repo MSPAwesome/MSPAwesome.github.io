@@ -148,11 +148,15 @@ needs to be color-coded for target values. */
   fill: #999999;  /* to match background-color */
 }
 
-.africa {
-  fill: green;
+.wedge {
+  stroke: black;
+  stroke-width: 1px;
 }
 
-
+.dataLabel {
+  text-anchor: middle;
+  fill: white;
+}
 
 /*
 #map-viz .non-functional {
@@ -233,7 +237,7 @@ svg {
   display: block;
 }
 
-svg:not(#pie) {
+svg:not(#svgPie) {
   margin: auto;
   background-color: #b6b6b6;
   outline: 3px solid black;

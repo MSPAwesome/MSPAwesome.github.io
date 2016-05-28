@@ -1,4 +1,3 @@
-
 // ====================================================================
 //    MAP
 // various GeoJSON and TopoJSON files from https://github.com/thadk/GeoTZ
@@ -9,16 +8,23 @@
 // ####################################################################
 // width and height of mapSVG
 var w = 750, h = 750;
-var pieW = 250, pieH = 250;
+
 // current checked radio button for Status
 var checkedStatus = getStatus();
+
 // variables to hold main data sets; may use outside map function
 var regionData, jsonData;
-// for zoom
+
 var active = d3.select(null);
-// var zoomed = false;
+var activeCsvData = {};
+
 // for opacity scale (for map); range is for quartiles
 var opacityDomain = {}, opacityRange = [0.25, 0.5, 0.75, 1];
+
+// create variables for pie
+var wPie = 250, hPie = 250;
+var outerRadius = wPie / 2;
+var innerRadius = 0;
 
 // ####################################################################
 //    CREATE DEFAULTS FOR MAP
@@ -49,28 +55,26 @@ var geoSVG = d3.select("#map-viz .viz")
 var g = geoSVG.append("g")
   .style("stroke-width", "1px");
 
-// pie chart!
-var pie = d3.layout.pie();
-
-// create variables for pie
-var outerRadius = pieW / 2;
-var innerRadius = 0;
+// ***************************************************************
+//    DEFAULTS FOR pie
+// ***************************************************************
 var arc = d3.svg.arc()
-  .innerRadius(innerRadius)
+	.innerRadius(innerRadius)
   .outerRadius(outerRadius);
 
-// create the svg element
+var pie = d3.layout.pie();
 var pieSVG = d3.select("#pie")
   .append("svg")
-  .attr("width", pieW)
-  .attr("height", pieH);
-
-// create new group ("g") for each wedge
-var arcs = pieSVG.append("g.arc")
+  .attr("width", wPie)
+  .attr("height", hPie)
+  .attr("id", "svgPie")
+  .append("g")
   .attr("class", "arc")
-  .attr("transform", "translate(" + outerRadius + ", " + outerRadius + ")")
-  .style("opacity", 0);
+  .attr("transform", "translate(" + outerRadius + ", " + outerRadius + ")");
 
+// ****************************************************************
+//    LOAD DATA / BIND TO elements
+// ***************************************************************
 /* load csv data here, then merge with map data. This way we only have to
 iterate through the csv once to match region names, not at every transition.*/
 d3.csv("data/regions.csv", function(data) {
@@ -128,8 +132,6 @@ d3.csv("data/regions.csv", function(data) {
         }
       }
 
-      // console.log(jsonData.features);
-
       // bind GeoJSON features (incl csvData obj) to new path elements
       g.selectAll("path")
         .data(jsonData.features)
@@ -138,85 +140,19 @@ d3.csv("data/regions.csv", function(data) {
         .attr("id", function(d) {
           // regions not in csv won't have this property
           if (d.properties.csvData) {
-            // console.log(d.properties.csvData.region);
+            // console.log(d.properties.csvData);
             return d.properties.csvData.region;
           }
         })
         .style("opacity", 0)    // set opacity to 0 so we can transition in
         .call(setMapAttr)
         .on("click", clicked);
-
-      // set whole-country path as "active" (means zoomed out, controls Status box text as well)
-      active = d3.select("#Tanzania").classed("active", true);
     }
   });
 });
 
-
-
 d3.selectAll("input")
   .on("click", statusClick);
-
-
-// // ****************************************************
-// // ****************************************************
-// // this is bar chart of counts of functionality values
-//
-// var dataset;  // global variable for the data itself
-// // d3.csv is async, so if other functions require the data to
-// // be loaded, include them inside this function.
-// d3.csv("data/counts.csv", function(error, data) {
-//   if(error) {   // if error is not NULL, i.e. data file loaded wrong
-//     console.log(error);
-//   } else { // if file loaded correctly, go on with it
-//     h = h * 0.65
-//     var barPadding = 5;
-//
-//     // Assign CSV data to variable so we can get it later
-//     dataset = data;
-//
-//     // Create svg in <main> to bind data to
-//     var svg = d3.select("#barChart-viz .viz")
-//       .append("svg")
-//       .attr("width", w)
-//       .attr("height", h)
-//       .attr("class", "barChart");
-//
-//     // create svg elements and bind data to them
-//     svg.selectAll("rect")
-//        //Freq is frequency of each target
-//       .data(dataset)
-//       .enter()
-//       .append("rect")
-//       .attr("x", function(d, i) {
-//         return i * (w / dataset.length);
-//       })
-//       .attr("width", w / dataset.length - barPadding)
-//       .attr("y", function(d) {
-//         return h - +d["Freq"]/100;
-//       })
-//       .attr("height", function(d) {
-//         return +d["Freq"]/100;
-//       })
-//       .attr("class", function(d) {
-//         return d["Var1"];
-//       });
-//
-//       svg.selectAll("text")
-//          .data(dataset)
-//          .enter()
-//          .append("text")
-//          .text(function(d) {
-//             return d["Var1"];
-//          })
-//          .attr("x", function(d, i) {
-//             return i * (w / dataset.length) + 15;
-//          })
-//          .attr("y", function(d) {
-//             return h - +d["Freq"]/100 + 30;
-//          });
-//   }
-// });
 
 // ####################################################################
 //    FUNCTIONS
@@ -237,59 +173,6 @@ function getStatus() {
   }
 }
 
-// "activeData" is the csv data for that region. region="Tanzania" if zoomed-out, region name if zoomed in. "active" variable should be set before calling this function.
-function updateMapInfo(activeCsvData) {
-  var regCounts = [];
-
-  // loop through this object's csvData object to add data to Status
-  Object.keys(activeCsvData).forEach(function (key) {
-    // update region name
-    var item = document.getElementById(key);
-    item.textContent = key + ": " + activeCsvData[key];
-
-    if (key !== "region") {
-      // create array to bind to pie chart
-      regCounts.push(activeCsvData[key])
-    }
-  });
-
-  var piePieces = arcs.selectAll("path").data(regCounts);
-
-  piePieces.exit()
-    .transition()
-    .duration(750)
-    .style("opacity", 0)
-    .remove();
-
-  piePieces.enter()
-    .append("path")
-    .attr("d", arc)
-    .style("opacity", 1);
-
-  var statusClass;
-  piePieces.attr("class", function(d) {
-      Object.keys(activeCsvData).forEach(function (key) {
-        if (activeCsvData[key] == d.value) {
-          statusClass = key;
-        }
-      })
-      return statusClass;
-    })
-    .transition()
-    .duration(750)
-    .style("opacity", 1)
-    .style("fill-opacity", 0.75);
-
-  // Add text labels
-  arcs.append("text")
-    .attr("transform", function(d) {
-      return "translate(" + arc.centroid(d) + ")";
-    })
-    .attr("text-anchor", "middle")
-    .text(function(d) {
-      return d.value;
-    });
-  };
 // set region path attributes if zoomed out
 // selection is selection of path elements
 function setMapAttr(selection) {
@@ -297,6 +180,7 @@ function setMapAttr(selection) {
   var currentRegion;
   var currentCsvData = {};
   var tzaData = {};
+
   // get which radio button is checked
   checkedStatus = getStatus();
 
@@ -317,10 +201,9 @@ function setMapAttr(selection) {
         pointCount = +currentCsvData[checkedStatus];
         currentRegion = currentCsvData.region;
         if (currentRegion == "Tanzania") {
-          // country path
-          // get csv data for later updateMapInfo
-          // console.log(currentCsvData);
-          tzaData = currentCsvData;
+          // console.log(d.properties.csvData);
+          active = d3.select(this);
+          updatePie(currentCsvData);
           return 1;
         } else {
           // get opacity for that class's quartiles
@@ -330,7 +213,7 @@ function setMapAttr(selection) {
       }
     })
     .attr("class", function(d) {
-      // if the property for the csvData object exists, set class as that checkedStatus, which defines the fill color (in CSS). Also include "region" for gen CSS rules. If no checkedStatus property, add "missing" class. Coun path gets "active" since we're by definition zoomed out (or is that added in "reset()"?)
+      // if the property for the csvData object exists, set class as that checkedStatus, which defines the fill color (in CSS). Also include "region" for gen CSS rules. If no checkedStatus property, add "missing" class. Country path gets "active" since we're by definition zoomed out (or is that added in "reset()"?)
       if (d.properties.csvData) {
         if (d.properties.csvData.region == "Tanzania") {
           return("region country active");
@@ -342,16 +225,11 @@ function setMapAttr(selection) {
         return("region missing");
       }
     });
-
-    // we're zoomed out, so set main country path as "active"
-    active = d3.select("#Tanzania");
-    updateMapInfo(tzaData);
 }
 
 // zoom on region when clicked..
 function clicked(d) {
-  var thisCsvData = {};
-  thisCsvData = d.properties.csvData;
+
   // if the region clicked is already "active" reset to original view
   // console.log(active);
   if (active.node() === this) return reset();
@@ -360,10 +238,12 @@ function clicked(d) {
   active.classed("active", false);
 
   // add "active" class to current selection
-  active = d3.select(this)
-    .classed("active", true);
+  active = d3.select(this).classed("active", true);
 
-  updateMapInfo(thisCsvData);
+  // pass csvData object to update pie and status box
+  var thisCsvData = {};
+  thisCsvData = d.properties.csvData;
+  updatePie(thisCsvData);
 
   g.selectAll("path")
     // trying to keep "Tanzania" path white with others fully transparent, but it's not really working. Perhaps need to learn more about keys.
@@ -496,4 +376,69 @@ function statusClick() {
   } else {
     addPoints(active.node());
   }
+}
+
+function updatePie(currentData) {
+  // selection of pie "g" elements
+  var wedges;
+  var dataLabels;
+  var statusClass;
+
+  // pieData() also updates status box
+  // and activeCsvData var
+	var wedgeData = pie(pieData(currentData));
+
+  // bind data to paths for wedges
+	wedges = pieSVG.selectAll("path")
+  	.data(wedgeData);
+  // bind data to text labels
+  dataLabels = pieSVG.selectAll("text")
+  	.data(wedgeData);
+
+	// add elements to enter selection (1st time only)
+  wedges.enter()
+  	.append("path");
+
+  dataLabels.enter()
+  	.append("text")
+    .attr("font-family", "monospace")
+    .attr("font-size", "20px");
+
+	// define attributes based on new data
+	wedges.attr("d", arc)
+    .attr("class", function(d) {
+      Object.keys(activeCsvData).forEach(function (key) {
+        if (activeCsvData[key] == d.data) {
+          statusClass = key;
+        }
+      })
+    	return statusClass + " wedge";
+  	});
+
+	dataLabels.text(function(d) {
+  		return d.value;
+  	})
+    .attr("transform", function(d) {
+    	return "translate(" + arc.centroid(d) + ")";
+    })
+    .attr("class", "dataLabel");
+}
+
+function pieData(activeData) {
+  activeCsvData = activeData;
+  var regCounts = [];
+
+  // loop through this object's csvData object
+  Object.keys(activeData).forEach(function (key) {
+    // console.log(key);
+    // update text in status box
+    var item = document.getElementById(key);
+    item.textContent = key + ": " + activeData[key];
+    // create pie data array
+    if (key !== "region") {
+      // create array of JUST the data values to bind to pie chart
+      regCounts.push(activeData[key])
+    }
+  });
+  return regCounts;
 }
