@@ -1,6 +1,7 @@
 // ====================================================================
 //    MAP
 // various GeoJSON and TopoJSON files from https://github.com/thadk/GeoTZ
+// but simplified with mapshaper.org
 // ====================================================================
 
 // ####################################################################
@@ -15,6 +16,7 @@ var checkedStatus = getStatus();
 // variables to hold main data sets; may use outside map function
 var regionData, jsonData;
 
+// to tag region we're actively zoomed in on
 var active = d3.select(null);
 var activeCsvData = {};
 
@@ -94,64 +96,54 @@ d3.csv("data/regions.csv", function(data) {
         opacityDomain[key].push(region[key]);   // add value to array
       }
     })
-  })
+  });
 
   // This code is for TopoJSON, much smaller than geojson
   var dataRegion;
   var mapRegion;
-  d3.json("geo/TZA_adm1_mkoaTZ.geojson", function(error, json) {
-  // d3.json("geo/TZA_adm1_mapshaper.json", function(error, json) {
+  d3.json("geo/TZA_adm1_mapshaper.json", function(error, json) {
     if(error) {
       console.log(error);
     } else {
       // log json -- easier to read than in text editor
       // console.log(json);
       // store json in global scope var to access it later for updates
-      // jsonData = json.objects.TZA_adm1_mkoaTZ;
-      jsonData = json;
+      jsonData = json.objects.TZA_adm1_mkoaTZ;
+      // jsonData = json;
       var jsonFeature;
       var csvRow;
 
-      // loop through json features (i.e., regions) ...
-      for (var i = 0; i < jsonData.features.length; i++) {
-        // ...  to get region name ...
-        jsonFeature = jsonData.features[i].properties;
-        mapRegion = jsonFeature.NAME_1;
+        // loop for topojson ...
+        for (var i = 0; i < jsonData.geometries.length; i++) {
+          // ...  to get region name ...
+          jsonFeature = jsonData.geometries[i].properties;
+          mapRegion = jsonFeature.NAME_1;
 
-        // // loop for topojson ...
-        // for (var i = 0; i < jsonData.geometries.length; i++) {
-        //   // ...  to get region name ...
-        //   jsonFeature = jsonData.geometries[i].properties;
-        //   mapRegion = jsonFeature.NAME_1;
-
-        if (mapRegion) {
-          // ... then loop through csv to find matching row ...
-          for (var j = 0; j < regionData.length; j++) {
-            csvRow = regionData[j];
-            dataRegion = csvRow.region;
-            // ... when we find a match ...
-            if (dataRegion == mapRegion) {
-              // ... add each column:value pair to json
-              // add the whole object, to make it easier to pull out later for Status and pie chart
-              jsonFeature["csvData"] = csvRow;
-              break;
+          if (mapRegion) {
+            // ... then loop through csv to find matching row ...
+            for (var j = 0; j < regionData.length; j++) {
+              csvRow = regionData[j];
+              dataRegion = csvRow.region;
+              // ... when we find a match ...
+              if (dataRegion == mapRegion) {
+                // ... add each column:value pair to json
+                // add the whole object, to make it easier to pull out later for Status and pie chart
+                jsonFeature["csvData"] = csvRow;
+                break;
+              }
             }
           }
         }
-      }
 
       // must convert topojson to geo before loading
-      // var subunits = topojson.feature(json, jsonData)
-      // bind GeoJSON features (incl csvData obj) to new path elements
-      // g.append("path")
-      // below for GeoJSON
+      var subunits = topojson.feature(json, jsonData);
+
       g.selectAll("path")
-        .data(jsonData.features)
-        // .datum(subunits)
+        .data(subunits.features)
         .enter().append("path")
         .attr("d", path) // <-- draw path on our projection from above
         .attr("id", function(d) {
-          console.log(d);
+          // console.log(d);
           // regions not in csv won't have this property
           if (d.properties.csvData) {
             // console.log(d.properties.csvData);
