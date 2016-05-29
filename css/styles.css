@@ -174,7 +174,7 @@ needs to be color-coded for target values. */
   stroke-width: 1px;
 }
 
-.dataLabel {
+.dataLabel, .regionLabel {
   text-anchor: middle;
   fill: white;
   font-weight: bold;
