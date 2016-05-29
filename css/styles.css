@@ -33,7 +33,7 @@ a {
   text-decoration: none;}
 
 /* rest of page */
-h1, h2, h3, legend, #region{
+h1, h2, h3, legend, #region {
   font-family: 'Montserrat', sans-serif;
   font-weight: normal;
   text-align: center;
@@ -96,16 +96,16 @@ p {
 fieldset, #pie {
   text-align: left;
   width: 250px;
-  padding: 5px 15px 15px 15px;
+  padding: 15px;
   margin: 70px auto 30px auto;
   border: 2px solid #444;
   border-radius: 10px;
   background-color: #b6b6b6;
 }
 
-#pie {
+/*#pie {
   height: 250px;
-}
+}*/
 
 legend, #region {
   margin: 0;
@@ -169,10 +169,16 @@ needs to be color-coded for target values. */
   fill: #999999;  /* to match background-color */
 }
 
-.africa {
-  fill: green;
+.wedge {
+  stroke: black;
+  stroke-width: 1px;
 }
 
+.dataLabel {
+  text-anchor: middle;
+  fill: white;
+  font-weight: bold;
+}
 
 
 /*
@@ -245,7 +251,7 @@ padding: 5px 10px 5px 10px;
 /*******   Tableau Dashboard*****************************************/
 /********************************************************************/
 
-#tableau-widget {	
+#tableau-widget {
      width: 1000px;
      padding: 5px 15px 15px 15px;
      margin: 70px auto 30px auto;
@@ -269,11 +275,13 @@ svg {
   display: block;
   margin: auto;
   background-color: #b6b6b6;
+}
+
+svg:not(#svgPie) {
   outline: 3px solid black;
   padding-left: 500px  /* to offset the map to the */
   /* right of the status box and pie chart */
 }
-
 
 /* selectors for HEADER and FOOTER elements */
 header h1 {
