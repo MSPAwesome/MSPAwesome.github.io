@@ -43,17 +43,29 @@
 	Though out of scope for the current project, in the event this project expands beyond Tanzania in the future, we would need to revisit the model speed limitations, as the amount of data and frequency of model executions would certainly increase.
 	<br/>
 	<br/>
-	Over the course of this effort we utilized several tools in order to explore and model our data. These tools include Tableau, Weka, R, and SAS Eminer.
+	Over the course of this effort we utilized several tools in order to explore and model our data. These tools include Tableau, Weka, R, and SAS Eminer. In order to create the best model possible, algorithms such as XGBoost and Random Forests were attempted and finally an ensemble of the two.
 	<p/>
-	<h2>Preliminary Conclusions</h2>
+	<h2>Recommendations</h2>
 	<p class="content">
-	For model selection, the project team recommends using the RStudio random forest model. It has shown to be slightly more accurate than the SAS models, particularly with the classification rate of the non-functional and functional-needs-repair categories. For an organization such as MSPAwsome, which has tight budgets and is reliant on grants for much of its funding, RStudio and the R language also make sense because they are free, open source tools with a robust and active community of developers. SAS Eminer did produce fairly accurate results and can quickly execute a number of models on the water-point data, but the results were not better than RStudio&#39;s, and SAS Eminer can be cost prohibitive.
+	The modeling team has attempted numerous combinations from the two primary modeling tools. SAS Eminer did produce fairly accurate results and can quickly execute a number of models on the water-point data, but the results lagged behind those from RStudio, and SAS Eminer can be cost prohibitive. For an organization such as MSPAwesome, which has tight budgets and is reliant on grants for much of its funding, RStudio and the R language are a better alternative because they are free, open-source tools with a robust and active community of developers. In RStudio, we primarily focused on two algorithms: the gradient boosting algorithm XGBoost, and randomForest. Both were solid performers. XGBoost predicted the non-functional and functional-needs-repair classes slightly better, but randomForest had a better overall accuracy.
 	<br/>
 	<br/>
-	Our future modeling efforts should grow on the results produced to date and look to increase the accuracy of our models. The team will attempt combining results from models, also called creating ensembles, to improve results. In addition, more effort should be put into the influence of the quantity variable and determine if that creates bias in the predictions. Furthermore, the impact of category imbalance, having such a large number of functional training records as compared to functional-needs-repair, needs to be explored. Accounting for this imbalance may improve the number of records misclassified as functional.
+In addition, we created ensemble models by combining the results of the RStudio models. First, the team attempted to perform model stacking. We tried several iterations of stacking, but the results failed to show an improvement in prediction.
 	<br/>
 	<br/>
-	Finally, while beyond the scope of the current project, future development should investigate simplifying the model and expanding data collection, so that the model&#39;s usage can expand beyond Tanzania and into other areas of Africa. This will require a coordinated effort across multiple agencies to standardize data formats and data-capture procedures. The project team would also have to re-evaluate any variables, such as region, that are specific to Tanzania. This is a longer term effort, but has potentially huge benefits for the population of the continent, particularly sub-Saharan Africa.
+Finally, the team averaged the predicted probabilities of each of the three response categories from the XGBoost and randomForest models, then selected the category from the maximum average probability. Using this strategy yielded a noticeable increase in prediction over any of the previously attempted models. Therefore, the team recommends using this blended model, averaging the predicted probabilities of RStudio’s XGBoost and randomForest models to achieve maximum accuracy.
+	<br/>
+	<br/>
+	While beyond the scope of the current project, future development should investigate simplifying the model and expanding data collection, so that the model’s usage can expand beyond Tanzania and into other areas of Africa (or around the world). This will require a coordinated effort across multiple agencies to standardize data formats and data-capture procedures. The project team would also have to re-evaluate any variables, such as region, that are specific to Tanzania. This is a longer term effort, but has potentially huge benefits for the population of the continent, particularly sub-Saharan Africa.
+	</p>
+	<h2>Recommendations for Action</h2>
+	<p class="content">
+	<ul class="list">
+		<li>Execute the model monthly on newly acquired data, and update the dashboard.</li>
+		<li>Review the model itself and review if new data points are available on an annual basis.</li>
+		<li>Implement training program to educate relevant staff on how to use the dashboard (and get feedback for future dashboard improvements).</li>
+		<li>Have repair group project managers monitor the dashboard to identify which areas to prioritize for repairs.</li>
+	</ul>
 	</p>
    </body>
 </html>

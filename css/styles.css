@@ -33,7 +33,7 @@ a {
   text-decoration: none;}
 
 /* rest of page */
-h1, h2, h3, legend, #region {
+h1, h2, h3, legend, #region{
   font-family: 'Montserrat', sans-serif;
   font-weight: normal;
   text-align: center;
@@ -66,6 +66,7 @@ p, figcaption, fieldset {
   margin: auto;
 }
 
+
 figcaption {
   margin-top: 50px;
   font-size: 80%;
@@ -95,13 +96,16 @@ p {
 fieldset, #pie {
   text-align: left;
   width: 250px;
-  padding: 15px;
+  padding: 5px 15px 15px 15px;
   margin: 70px auto 30px auto;
   border: 2px solid #444;
   border-radius: 10px;
   background-color: #b6b6b6;
 }
 
+#pie {
+  height: 250px;
+}
 
 legend, #region {
   margin: 0;
@@ -111,7 +115,15 @@ legend, #region {
 
 .content {
   text-align: left;
-  padding: 0px 50px;}
+  padding: 0px 50px;
+ }
+
+
+ul.list {
+  margin: auto;
+  text-align: left;
+  padding: 0px 50px;
+  max-width: 50%;}
 
 /* selectors for actual visualizations
  NOTE! #id is MORE specific than class, and
@@ -129,6 +141,7 @@ path.region:not(.missing) {
 /* targets all "region" class paths (in map) except those that are also class "missing" and changes settings on hover (because we want missing regions not to change)*/
 path.region:not(.missing):hover {
   stroke-width: 3px;
+
 }
 
 .waterpoint {
@@ -156,16 +169,10 @@ needs to be color-coded for target values. */
   fill: #999999;  /* to match background-color */
 }
 
-.wedge {
-  stroke: black;
-  stroke-width: 1px;
+.africa {
+  fill: green;
 }
 
-.dataLabel, .regionLabel {
-  text-anchor: middle;
-  fill: white;
-  font-weight: bold;
-}
 
 
 /*
@@ -238,7 +245,7 @@ padding: 5px 10px 5px 10px;
 /*******   Tableau Dashboard*****************************************/
 /********************************************************************/
 
-#tableau-widget {
+#tableau-widget {	
      width: 1000px;
      padding: 5px 15px 15px 15px;
      margin: 70px auto 30px auto;
@@ -260,9 +267,6 @@ use this for universal element styles
 *********************/
 svg {
   display: block;
-}
-
-svg:not(#svgPie) {
   margin: auto;
   background-color: #b6b6b6;
   outline: 3px solid black;
