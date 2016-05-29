@@ -137,7 +137,7 @@ d3.csv("data/regions.csv", function(data) {
 
       // must convert topojson to geo before loading
       var subunits = topojson.feature(json, jsonData);
-
+      // console.log(subunits.features);
       g.selectAll("path")
         .data(subunits.features)
         .enter().append("path")
@@ -153,6 +153,30 @@ d3.csv("data/regions.csv", function(data) {
         .style("opacity", 0)    // set opacity to 0 so we can transition in
         .call(setMapAttr)
         .on("click", clicked);
+
+      g.selectAll(".regionLabel")
+        .data(subunits.features)
+        .enter().append("text")
+        .attr("class", "regionLabel")
+        .attr("x", function(d) {
+          // regions not in csv won't have this property
+          if (d.properties.csvData) {
+            return path.centroid(d)[0];
+          }
+        })
+        .attr("y", function(d) {
+          // regions not in csv won't have this property
+          if (d.properties.csvData) {
+            return path.centroid(d)[1];
+          }
+        })
+        .text(function(d) {
+          // regions not in csv won't have this property
+          if (d.properties.csvData) {
+            if (d.properties.csvData.region != "Tanzania")
+            return d.properties.csvData.region;
+          }
+        });
     }
   });
 });
@@ -439,7 +463,13 @@ function pieData(activeData) {
     // console.log(key);
     // update text in status box
     var item = document.getElementById(key);
-    item.textContent = key + ": " + activeData[key];
+    var statusLabel;
+    if (activeData[key] == "Tanzania") {
+      statusLabel = activeData[key];
+    } else {
+      statusLabel = key + ": " + activeData[key];
+    }
+    item.textContent = statusLabel;
     // create pie data array
     if (key !== "region") {
       // create array of JUST the data values to bind to pie chart

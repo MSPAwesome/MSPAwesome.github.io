@@ -95,7 +95,7 @@ p {
 fieldset, #pie {
   text-align: left;
   width: 250px;
-  padding: 5px 15px 15px 15px;
+  padding: 15px;
   margin: 70px auto 30px auto;
   border: 2px solid #444;
   border-radius: 10px;
@@ -129,7 +129,6 @@ path.region:not(.missing) {
 /* targets all "region" class paths (in map) except those that are also class "missing" and changes settings on hover (because we want missing regions not to change)*/
 path.region:not(.missing):hover {
   stroke-width: 3px;
-
 }
 
 .waterpoint {
@@ -162,10 +161,12 @@ needs to be color-coded for target values. */
   stroke-width: 1px;
 }
 
-.dataLabel {
+.dataLabel, .regionLabel {
   text-anchor: middle;
   fill: white;
+  font-weight: bold;
 }
+
 
 /*
 #map-viz .non-functional {
@@ -230,7 +231,7 @@ height: 20%;
 /*******   Tableau Dashboard*****************************************/
 /********************************************************************/
 
-#tableau-widget {	
+#tableau-widget {
      width: 1000px;
      padding: 5px 15px 15px 15px;
      margin: 70px auto 30px auto;
