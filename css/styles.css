@@ -3,8 +3,8 @@ body {
   font-family: Arial, Times, serif;
   font-size: 100%;
   line-height: 1.4em;
-  background-color: #999999;
-  /*background-color: black;*/
+  /*background-color: #999999;*/
+  background-color: white;
   text-decoration-color: white;
 }
 
@@ -96,11 +96,11 @@ p {
 fieldset, #pie {
   text-align: left;
   width: 250px;
-  padding: 15px;
+  padding: 0px 15px 15px 15px;
   margin: 70px auto 30px auto;
   border: 2px solid #444;
   border-radius: 10px;
-  background-color: #b6b6b6;
+  background-color: white;
 }
 
 #pie {
@@ -109,7 +109,7 @@ fieldset, #pie {
 
 legend, #region {
   margin: 0;
-  padding: 5px 2px;
+  padding: 2px 2px;
   text-align: left;
 }
 
@@ -202,15 +202,6 @@ needs to be color-coded for target values. */
 }
  */
 
-/*******************************************************/
-/****     BAR CHART     **************************************/
-/******************************************************/
-#barChart-viz .viz {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 90%;
-    font-weight: bold;
-}
-
 /* image selectors. will have to change to svg element or something
 when we migrate to javascript */
 img {
@@ -296,9 +287,10 @@ svg:not(#svgPie) {
 header h1 {
   font-family: 'Montserrat', sans-serif;
   text-align: center;
-  padding:50px;
+  padding:25px;
   font-size: 250%;
   margin: 0%;
+  line-height: normal;
 }
 
 .nav {
