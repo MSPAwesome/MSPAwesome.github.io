@@ -176,7 +176,11 @@ d3.csv("data/regions.csv", function(data) {
             if (d.properties.csvData.region != "Tanzania")
             return d.properties.csvData.region;
           }
-        });
+        })
+        .style("opacity", 0)
+        .transition()
+        .duration(750)
+        .style("opacity", 1); // will fade in with transition
     }
   });
 });
@@ -202,6 +206,7 @@ function getStatus() {
     }
   }
 }
+
 
 // set region path attributes if zoomed out
 // selection is selection of path elements
@@ -309,6 +314,11 @@ function clicked(d) {
       .duration(2000)
       .style("stroke-width", 1.5 / scale + "px")
       .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+
+  g.selectAll(".regionLabel")
+    .transition()
+    .duration(2000)
+    .style("opacity", 0);
 }
 
 // zoom out when clicked again
@@ -316,14 +326,22 @@ function reset() {
   // remove active class from current region
   active.classed("active", false);
   active = d3.select(null);
+
   g.selectAll("circle")
     .transition()
     .duration(1000)
     .attr("r", 0)
     .remove();
+
   g.selectAll("path")
     // no transition here, it's already in the function
     .call(setMapAttr);
+
+  g.selectAll(".regionLabel")
+    .transition()
+    .duration(750)
+    .style("opacity", 1);
+
   g.transition()
       // .delay(750)
       .duration(1000)

@@ -256,7 +256,7 @@ padding: 5px 10px 5px 10px;
      padding: 5px 15px 15px 15px;
      margin: 70px auto 30px auto;
      border: 3px solid black;
-     background-color: #b6b6b6;
+     background-color: white;
 }
 
 .tableauPlaceholder {
@@ -274,7 +274,7 @@ use this for universal element styles
 svg {
   display: block;
   margin: auto;
-  background-color: #b6b6b6;
+  background-color: white;
 }
 
 svg:not(#svgPie) {
