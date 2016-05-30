@@ -77,7 +77,7 @@ var pieSVG = d3.select("#pie")
 // ****************************************************************
 //    LOAD DATA / BIND TO elements
 // ***************************************************************
-// map of Africa?
+// map of Africa (background)
 d3.json("geo/africa.geo.json", function(error, json) {
   if(error) {
     console.log(error);
@@ -162,14 +162,22 @@ d3.csv("data/regions.csv", function(data) {
         .enter().append("path")
         .attr("d", path) // <-- draw path on our projection from above
         .attr("id", function(d) {
-          console.log(d);
+          // console.log(d);
           // regions not in csv won't have this property
           if (d.properties.csvData) {
             // console.log(d.properties.csvData);
             return d.properties.csvData.region;
           }
         })
-        .style("opacity", 0)    // set opacity to 0 so we can transition in
+        .style("opacity", function(d){
+          var op = 1;   // for paths w/o data
+          if (d.properties.csvData) {
+            if (d.id !== "Tanzania") {
+                op = 0;
+            }
+          }
+          return op;
+        })    // set opacity to 0 so we can transition in
         .call(setMapAttr)
         .on("click", clicked);
 
@@ -483,7 +491,8 @@ function updatePie(currentData) {
   	});
 
 	dataLabels.text(function(d) {
-  		return d.value;
+      // compute percentages based on start/end angles
+  		return Math.round(((d.endAngle - d.startAngle) / (2 * Math.PI)) * 100) + "%";
   	})
     .attr("transform", function(d) {
     	return "translate(" + arc.centroid(d) + ")";
@@ -493,7 +502,7 @@ function updatePie(currentData) {
 
 function pieData(activeData) {
   activeCsvData = activeData;
-  var regCounts = [];
+  var regCounts = [];   // numbers to actually put in the pie
 
   // loop through this object's csvData object
   Object.keys(activeData).forEach(function (key) {
@@ -507,7 +516,8 @@ function pieData(activeData) {
       statusLabel = key + ": " + activeData[key];
     }
     item.textContent = statusLabel;
-    // create pie data array
+
+    // get total of all points in region
     if (key !== "region") {
       // create array of JUST the data values to bind to pie chart
       regCounts.push(activeData[key])

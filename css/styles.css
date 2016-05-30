@@ -152,7 +152,7 @@ path.region:not(.missing):hover {
 needs to be color-coded for target values. */
 
 /* set country-level path fill to white, behind region-level opacity */
-#Tanzania {
+#Tanzania, .missing {
   fill: white;
 }
 
@@ -165,9 +165,7 @@ needs to be color-coded for target values. */
 .non-functional {     /* red */
   fill: #a50f15;
 }
-.missing {
-  fill: #999999;  /* to match background-color */
-}
+
 
 .africa {
   fill: white;
