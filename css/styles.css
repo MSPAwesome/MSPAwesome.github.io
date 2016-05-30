@@ -103,9 +103,9 @@ fieldset, #pie {
   background-color: #b6b6b6;
 }
 
-/*#pie {
-  height: 250px;
-}*/
+#pie {
+  margin: 30px auto 30px auto;
+}
 
 legend, #region {
   margin: 0;
@@ -156,16 +156,18 @@ needs to be color-coded for target values. */
   fill: white;
 }
 
-.functional {
+.functional, #functional {
   fill: #08519c;   /* blue */
+  color:  #08519c;
 }
-.functional-needs-repair {    /* orange */
+.functional-needs-repair, #functional-needs-repair {    /* orange */
   fill: #a63603;
+  color:  #a63603;
 }
-.non-functional {     /* red */
+.non-functional, #non-functional {     /* red */
   fill: #a50f15;
+  color: #a50f15;
 }
-
 
 .africa {
   fill: white;
@@ -179,6 +181,10 @@ needs to be color-coded for target values. */
 .dataLabel, .regionLabel {
   text-anchor: middle;
   fill: white;
+  font-weight: bold;
+}
+
+.status {
   font-weight: bold;
 }
 
