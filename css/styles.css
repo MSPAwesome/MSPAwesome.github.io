@@ -169,7 +169,11 @@ needs to be color-coded for target values. */
   fill: #999999;  /* to match background-color */
 }
 
-.wedge {
+.africa {
+  fill: white;
+}
+
+.wedge, .africa {
   stroke: black;
   stroke-width: 1px;
 }
@@ -274,11 +278,12 @@ use this for universal element styles
 svg {
   display: block;
   margin: auto;
-  background-color: white;
+  /*background-color: white;*/
 }
 
 svg:not(#svgPie) {
   outline: 3px solid black;
+  background-color: #92c5de;
   padding-left: 500px  /* to offset the map to the */
   /* right of the status box and pie chart */
 }

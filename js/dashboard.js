@@ -77,6 +77,25 @@ var pieSVG = d3.select("#pie")
 // ****************************************************************
 //    LOAD DATA / BIND TO elements
 // ***************************************************************
+// map of Africa?
+d3.json("geo/africa.geo.json", function(error, json) {
+  if(error) {
+    console.log(error);
+  } else {
+    console.log(json.features);
+    g.selectAll("path.africa")
+      .data(json.features)
+      .enter().append("path")
+      .attr("d", path)
+      .attr("id", function(d) {
+        // console.log(d);
+        return d.properties.name;
+      })
+      .attr("class", "africa");
+  }
+});
+
+
 /* load csv data here, then merge with map data. This way we only have to
 iterate through the csv once to match region names, not at every transition.*/
 d3.csv("data/regions.csv", function(data) {
@@ -138,12 +157,12 @@ d3.csv("data/regions.csv", function(data) {
       // must convert topojson to geo before loading
       var subunits = topojson.feature(json, jsonData);
       // console.log(subunits.features);
-      g.selectAll("path")
+      g.selectAll("path.region")
         .data(subunits.features)
         .enter().append("path")
         .attr("d", path) // <-- draw path on our projection from above
         .attr("id", function(d) {
-          // console.log(d);
+          console.log(d);
           // regions not in csv won't have this property
           if (d.properties.csvData) {
             // console.log(d.properties.csvData);
@@ -280,7 +299,7 @@ function clicked(d) {
   thisCsvData = d.properties.csvData;
   updatePie(thisCsvData);
 
-  g.selectAll("path")
+  g.selectAll("path.region")
     // trying to keep "Tanzania" path white with others fully transparent, but it's not really working. Perhaps need to learn more about keys.
     .transition()
     // .delay(750)
@@ -333,7 +352,7 @@ function reset() {
     .attr("r", 0)
     .remove();
 
-  g.selectAll("path")
+  g.selectAll("path.region")
     // no transition here, it's already in the function
     .call(setMapAttr);
 
@@ -415,7 +434,7 @@ function addPoints(regionNode) {
 // change displayed data based on current selected status_group
 function statusClick() {
   if (active.node().id == "Tanzania") {
-    g.selectAll("path")
+    g.selectAll("path.region")
       // .data(jsonData.features)
       .transition()
       .duration(500)
@@ -437,7 +456,7 @@ function updatePie(currentData) {
 	var wedgeData = pie(pieData(currentData));
 
   // bind data to paths for wedges
-	wedges = pieSVG.selectAll("path")
+	wedges = pieSVG.selectAll("path.wedge")
   	.data(wedgeData);
   // bind data to text labels
   dataLabels = pieSVG.selectAll("text")
