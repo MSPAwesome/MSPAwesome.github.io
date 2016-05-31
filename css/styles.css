@@ -93,18 +93,14 @@ p {
   z-index: 5;
 }
 
-fieldset, #pie {
+fieldset {
   text-align: left;
   width: 250px;
   padding: 0px 15px 15px 15px;
-  margin: 70px auto 30px auto;
+  margin: 30px auto 30px auto;
   border: 2px solid #444;
   border-radius: 10px;
   background-color: white;
-}
-
-#pie, #currentStatus {
-  margin: 30px auto 30px auto;
 }
 
 legend, #region {
@@ -152,8 +148,8 @@ path.region:not(.missing):hover {
 needs to be color-coded for target values. */
 
 /* set country-level path fill to white, behind region-level opacity */
-#Tanzania, .missing {
-  fill: white;
+#Tanzania, .missing, .africa {
+  fill: #ECE5D5
 }
 
 .functional, #functional {
@@ -167,10 +163,6 @@ needs to be color-coded for target values. */
 .non-functional, #non-functional {     /* red */
   fill: #a50f15;
   color: #a50f15;
-}
-
-.africa {
-  fill: white;
 }
 
 .wedge, .africa {

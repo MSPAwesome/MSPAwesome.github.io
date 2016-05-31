@@ -29,9 +29,6 @@
         <figure>
 <!-- contained elements are on TOP of SVG -->
           <aside id="map-info">
-            <fieldset id="key">
-              <legend>Key</legend>
-            </fieldset>
             <fieldset id="currentStatus">
               <legend>Status</legend>
               <p id="region">
@@ -42,6 +39,9 @@
               <input type="radio" name="status_group" class="mapFilter"  value="functional-needs-repair" />
               <label id="functional-needs-repair" class="status"></label><br />
               <input type="radio" name="status_group" class="mapFilter" value="functional" /> <label id="functional" class="status"></label>
+            </fieldset>
+            <fieldset id="key">
+              <legend>Key</legend>
             </fieldset>
             <fieldset id="pie">
               <!-- this is what we'll select to add pie chart with d3.  I know it's not a fieldset but this makes the legends match-->
