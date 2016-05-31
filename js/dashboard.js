@@ -77,15 +77,6 @@ var pieSVG = d3.select("#pie")
 // ****************************************************************
 //    LEGEND
 // ****************************************************************
-var keyScale = opacityScale.domain([0,1]);
-
-var legendScale = d3.legend.color()
-  .labelFormat(d3.format(".0%"))
-  // .labelDelimiter("")
-  .title("Count quartile")
-  .shapeWidth(50)
-  // .orient("horizontal")
-  .scale(keyScale);
 
 var svgKey = d3.select("#key")
   .append("svg")
@@ -94,7 +85,7 @@ var svgKey = d3.select("#key")
   .attr("id", "svgKey")
   .append("g")   // to group elements together
   .attr("transform", "translate(20,20)")
-  .call(legendScale);
+  .call(legendColors);
 
 // ****************************************************************
 //    LOAD DATA / BIND TO elements
@@ -467,6 +458,8 @@ function addPoints(regionNode) {
 
 // change displayed data based on current selected status_group
 function statusClick() {
+  checkedStatus = getStatus();
+  svgKey.call(legendColors);
   if (active.node().id == "Tanzania") {
     g.selectAll("path.region")
       // .data(jsonData.features)
@@ -550,4 +543,35 @@ function pieData(activeData) {
     }
   });
   return regCounts;
+}
+
+function legendColors(svg) {
+  var legendRange = getKeyRange(checkedStatus);
+
+  var keyScale = d3.scale.quantile()
+    .domain([0,1])
+    .range(legendRange);
+
+  var legendScale = d3.legend.color()
+    .labelFormat(d3.format(".0%"))
+    .title("Count quartile")
+    .shapeWidth(50)
+    .scale(keyScale);
+
+  svg.call(legendScale);
+
+    function getKeyRange(status) {
+      var keyRange = [];
+      var element = document.getElementById(status);
+      var style = window.getComputedStyle(element);
+      var color = style.getPropertyValue("color"); //returns rgb
+
+      var newColor;
+      opacityRange.forEach(function (item) {
+        newColor = color.replace(')', ', ' + item).replace('rgb', 'rgba');
+        keyRange.push(newColor);
+      });
+      // console.log(keyRange);
+      return keyRange;
+    }
 }
