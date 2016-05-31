@@ -48,10 +48,10 @@ var path = d3.geo.path().projection(projection);
 // generate svg object at bottom of "#map-viz" div class ".viz"
 var geoSVG = d3.select("#map-viz .viz")
   .append("svg")
-  // .attr("style", "outline: thin solid black;")
   .attr("width", w)
-  .attr("height", h);
-  // .attr("border", 1);
+  .attr("height", h)
+  .attr("id", "geoSvg");
+
 
 // g attribute groups elements together, so you can zoom all
 var g = geoSVG.append("g")
@@ -73,6 +73,26 @@ var pieSVG = d3.select("#pie")
   .append("g")
   .attr("class", "arc")
   .attr("transform", "translate(" + outerRadius + ", " + outerRadius + ")");
+
+// ****************************************************************
+//    LEGEND
+// ****************************************************************
+var keyScale = opacityScale.domain([0,1]);
+
+var legendScale = d3.legend.color()
+  .labelFormat(d3.format(".2f"))
+  .shapeWidth(10)
+  .orient("horizontal")
+  .scale(keyScale);
+
+var svgKey = d3.select("#key")
+  .append("svg")
+  .attr("width", wPie)
+  .attr("height", hPie / 3)
+  .attr("id", "svgKey")
+  .append("g")   // to group elements together
+  .attr("transform", "translate(20,20)")
+  .call(legendScale);
 
 // ****************************************************************
 //    LOAD DATA / BIND TO elements

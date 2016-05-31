@@ -103,7 +103,7 @@ fieldset, #pie {
   background-color: white;
 }
 
-#pie {
+#pie, #currentStatus {
   margin: 30px auto 30px auto;
 }
 
@@ -276,7 +276,7 @@ svg {
   /*background-color: white;*/
 }
 
-svg:not(#svgPie) {
+#geoSvg {
   outline: 3px solid black;
   background-color: #92c5de;
   padding-left: 500px  /* to offset the map to the */
