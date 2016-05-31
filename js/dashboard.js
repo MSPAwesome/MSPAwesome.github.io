@@ -80,15 +80,17 @@ var pieSVG = d3.select("#pie")
 var keyScale = opacityScale.domain([0,1]);
 
 var legendScale = d3.legend.color()
-  .labelFormat(d3.format(".2f"))
-  .shapeWidth(10)
-  .orient("horizontal")
+  .labelFormat(d3.format(".0%"))
+  // .labelDelimiter("")
+  .title("Count quartile")
+  .shapeWidth(50)
+  // .orient("horizontal")
   .scale(keyScale);
 
 var svgKey = d3.select("#key")
   .append("svg")
   .attr("width", wPie)
-  .attr("height", hPie / 3)
+  .attr("height", hPie /2 )
   .attr("id", "svgKey")
   .append("g")   // to group elements together
   .attr("transform", "translate(20,20)")
@@ -102,7 +104,7 @@ d3.json("geo/africa.geo.json", function(error, json) {
   if(error) {
     console.log(error);
   } else {
-    console.log(json.features);
+    // console.log(json.features);
     g.selectAll("path.africa")
       .data(json.features)
       .enter().append("path")
@@ -111,7 +113,11 @@ d3.json("geo/africa.geo.json", function(error, json) {
         // console.log(d);
         return d.properties.name;
       })
-      .attr("class", "africa");
+      .attr("class", "africa")
+      .style("opacity", 0)
+      .transition()
+      .duration(1000)
+      .style("opacity", 1);
   }
 });
 
