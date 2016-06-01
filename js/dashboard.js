@@ -554,8 +554,9 @@ function legendColors(svg) {
 
   var legendScale = d3.legend.color()
     .labelFormat(d3.format(".0%"))
-    .title("Count quartile")
+    .labels(["25th percentile", "50th percentile", "75th percentile", "100th percentile"])
     .shapeWidth(50)
+    .shapeHeight(20)
     .scale(keyScale);
 
   svg.call(legendScale);
