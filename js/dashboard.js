@@ -546,7 +546,7 @@ function pieData(activeData) {
 }
 
 function legendColors(svg) {
-  var legendRange = getKeyRange(checkedStatus);
+  var legendRange = getKeyRange("currentStatus");
 
   var keyScale = d3.scale.quantile()
     .domain([0,1])
