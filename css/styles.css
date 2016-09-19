@@ -223,6 +223,7 @@ img.small {
 svg {
   display: block;
   margin: auto;
+  overflow: hidden;
 }
 
 #geoSvg {
