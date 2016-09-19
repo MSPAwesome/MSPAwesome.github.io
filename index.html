@@ -32,17 +32,19 @@
         <figure>
 <!-- contained elements are on TOP of SVG -->
           <aside id="map-info">
+            <form id="status_group">
             <fieldset id="currentStatus">
-              <legend>Status</legend>
-              <p id="region">
-                Tanzania
-              </p>
-              <input type="radio" name="status_group" class="mapFilter"  value="non-functional" checked="checked" />
-              <label id="non-functional" class="status"></label><br />
-              <input type="radio" name="status_group" class="mapFilter"  value="functional-needs-repair" />
-              <label id="functional-needs-repair" class="status"></label><br />
-              <input type="radio" name="status_group" class="mapFilter" value="functional" /> <label id="functional" class="status"></label>
-            </fieldset>
+                <legend>Status</legend>
+                <p id="region">
+                  Tanzania
+                </p>
+                <input type="radio" name="status_group" class="mapFilter"  value="non-functional" checked="checked" />
+                <label id="non-functional" class="status"></label><br />
+                <input type="radio" name="status_group" class="mapFilter"  value="functional-needs-repair" />
+                <label id="functional-needs-repair" class="status"></label><br />
+                <input type="radio" name="status_group" class="mapFilter" value="functional" /> <label id="functional" class="status"></label>
+              </fieldset>
+            </form>
             <fieldset id="key">
               <legend>Frequency</legend>
             </fieldset>
