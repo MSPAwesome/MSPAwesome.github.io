@@ -351,7 +351,7 @@ function clicked(d) {
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
       scale = .9 / Math.max(dx / w, dy / h),
-      translate = [w / 2 - scale * x, h / 2 - scale * y];
+      translate = [((2 * w) / 3) - (scale * x), h / 2 - scale * y];
 
   // transition to new view
   g.transition()
