@@ -8,7 +8,7 @@
 //    SOME GLOBAL VARIABLES
 // ####################################################################
 // width and height of mapSVG
-var w = 750, h = 750;
+var w = 1250, h = 750;
 
 // current checked radio button for Status
 var checkedStatus = getStatus();
@@ -38,7 +38,7 @@ var opacityScale = d3.scale.quantile()
 
 // i.e. map projection. Mostly just trial and error here.
 var projection = d3.geo.mercator()
-  .center([34.8888, -6.3690])
+  .center([30, -6])
   .translate([w / 2, h / 2])
   .scale(3000);
 

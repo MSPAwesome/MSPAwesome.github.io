@@ -227,8 +227,6 @@ svg {
 
 #geoSvg {
   background-color: #92c5de;
-  padding-left: 500px  /* to offset the map to the */
-  /* right of the status box and pie chart */
 }
 
 /* selectors for HEADER and FOOTER elements */
