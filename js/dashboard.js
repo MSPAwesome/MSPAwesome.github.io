@@ -546,7 +546,7 @@ function pieData(activeData) {
 }
 
 function legendColors(svg) {
-  var legendRange = getKeyRange("currentStatus");
+  var legendRange = getKeyRange(checkedStatus);
 
   var keyScale = d3.scale.quantile()
     .domain([0,1])
@@ -569,7 +569,7 @@ function legendColors(svg) {
 
       var newColor;
       opacityRange.forEach(function (item) {
-        newColor = color.replace(')', ', ' + item).replace('rgb', 'rgba');
+        newColor = color.replace(')', ', ' + item + ')').replace('rgb', 'rgba');
         keyRange.push(newColor);
       });
       // console.log(keyRange);
