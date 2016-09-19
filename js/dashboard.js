@@ -241,7 +241,6 @@ function getStatus() {
   var form, options;
   // console.log("checking status");
   form = document.getElementById('status_group');
-  console.log(form);
   options = form.elements;
   for (var i = 0; i < options.length; i++) {
     if (options[i].checked) {
